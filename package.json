@@ -1,0 +1,20 @@
+{
+  "name": "aplicotizaciones2",
+  "version": "2.0.0",
+  "description": "Backend de cotizaciones (Bolivia): oficial, paralelo, monedas vecinas, oro, UFV, inflación, billeteras y bancos",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "pg": "^8.23.1"
+  }
+}

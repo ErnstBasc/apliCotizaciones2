@@ -1,0 +1,22 @@
+// Fábrica de la aplicación Express. NO abre puertos ni conexiones: recibe sus dependencias ya hechas.
+// Así se puede probar con dependencias falsas, y server.js (la "raíz de composición") es el único
+// lugar donde se arma todo con piezas reales.
+const express = require('express');
+const { crearRutaHealth } = require('./routes/health');
+const { noEncontrado, manejarErrores } = require('./middleware/errores');
+
+function crearApp({ repositorio, logger = console }) {
+  const app = express();
+  app.disable('x-powered-by'); // no anunciar la tecnología del servidor
+  app.use(express.json({ limit: '10kb' })); // cuerpos pequeños: evita peticiones gigantes
+
+  app.use('/health', crearRutaHealth(express, repositorio));
+
+  // Los pasos siguientes agregan aquí las rutas de cotizaciones, conversor, docs, etc.
+
+  app.use(noEncontrado);
+  app.use(manejarErrores(logger));
+  return app;
+}
+
+module.exports = { crearApp };

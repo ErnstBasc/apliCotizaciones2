@@ -1,0 +1,15 @@
+# Dependencias (se reinstalan con "npm install")
+node_modules/
+
+# Credenciales: NUNCA subir el .env (solo la plantilla .env.example)
+.env
+
+# Registros y archivos del sistema
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
