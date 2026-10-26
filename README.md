@@ -2,7 +2,7 @@
 
 Segundo prototipo (más avanzado) de apliCotizaciones. Proyecto de *Tecnologías Web II*.
 
-**Estado:** Paso 2 (núcleo). Conexión a PostgreSQL, repositorio, caché genérico, manejo de errores y `/health`.
+**Estado:** Paso 4. Núcleo, Frankfurter (con PYG), BCB (oficial, oro, UFV, inflación); rutas `/health`, `/monedas`, `/oficial` y `/indicadores`.
 
 ## Estructura
 

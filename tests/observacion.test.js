@@ -30,7 +30,8 @@ test('la observación es inmutable', () => {
 });
 
 test('verificarAdaptador exige nombre y obtener()', () => {
-  assert.doesNotThrow(() => verificarAdaptador({ nombre: 'falso', obtener: async () => [] }));
-  assert.throws(() => verificarAdaptador({ obtener: async () => [] }), /nombre/);
-  assert.throws(() => verificarAdaptador({ nombre: 'x' }), /obtener/);
+  assert.doesNotThrow(() => verificarAdaptador({ nombre: 'falso', instrumentos: ['EUR'], obtener: async () => [] }));
+  assert.throws(() => verificarAdaptador({ instrumentos: ['EUR'], obtener: async () => [] }), /nombre/);
+  assert.throws(() => verificarAdaptador({ nombre: 'x', obtener: async () => [] }), /instrumentos/);
+  assert.throws(() => verificarAdaptador({ nombre: 'x', instrumentos: ['EUR'] }), /obtener/);
 });

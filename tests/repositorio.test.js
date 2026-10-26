@@ -20,11 +20,12 @@ test('guardar usa consulta parametrizada y pasa los datos como parámetros', asy
 
 test('ultimas convierte NUMERIC (texto) en Number y fechas en Date', async () => {
   const db = dbFalsa([{
-    instrumento: 'BOB_BANCO', entidad: 'fie', unidad: 'Bs por USD', valor: null, compra: '10.980000', venta: '11.980000',
+    instrumento: 'BOB_BANCO', nombre: 'Dólar en bancos', entidad: 'fie', unidad: 'Bs por USD', valor: null, compra: '10.980000', venta: '11.980000',
     estado: 'vigente', fecha: '2026-10-25', obtenido_en: '2026-10-25T19:29:33Z',
   }]);
   const [o] = await crearRepositorioCotizaciones(db).ultimas(['BOB_BANCO']);
   assert.strictEqual(o.compra, 10.98);
+  assert.strictEqual(o.nombre, 'Dólar en bancos');
   assert.strictEqual(o.venta, 11.98);
   assert.strictEqual(o.valor, null);
   assert.ok(o.obtenidoEn instanceof Date);
