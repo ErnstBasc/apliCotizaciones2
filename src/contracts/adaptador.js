@@ -2,7 +2,8 @@
 // una convención verificable: un adaptador es un objeto con
 //   - nombre:   código de la fuente, igual al de la tabla fuentes ('bcb', 'frankfurter', …)
 //   - instrumentos: códigos de instrumento que produce (el caché los usa para saber qué buscar)
-//   - obtener(): async, devuelve un arreglo de Observaciones (ver observacion.js)
+//   - obtener(): async, devuelve un arreglo de Observaciones (ver observacion.js), o bien
+//                { fuente, observaciones } cuando la fuente que responde puede variar (ver conRespaldo.js)
 // Los servicios reciben adaptadores desde afuera (inyección de dependencias) y no saben cuál es cuál.
 
 function verificarAdaptador(a) {

@@ -2,7 +2,7 @@
 
 Segundo prototipo (más avanzado) de apliCotizaciones. Proyecto de *Tecnologías Web II*.
 
-**Estado:** Paso 4. Núcleo, Frankfurter (con PYG), BCB (oficial, oro, UFV, inflación); rutas `/health`, `/monedas`, `/oficial` y `/indicadores`.
+**Estado:** Paso 5. Núcleo, Frankfurter (con PYG), BCB (oficial, oro, UFV, inflación) y dólar paralelo (Binance P2P con respaldo); rutas `/health`, `/monedas`, `/oficial`, `/paralelo` e `/indicadores`.
 
 ## Estructura
 

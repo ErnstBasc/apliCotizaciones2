@@ -31,10 +31,13 @@ function crearServicioCache({ repositorio, reloj = () => Date.now(), logger = co
     }
 
     try {
-      const nuevas = await adaptador.obtener();
-      await repositorio.guardarVarias(nuevas, adaptador.nombre);
+      // Un adaptador puede devolver un arreglo, o { fuente, observaciones } si la fuente real varía (ver conRespaldo.js)
+      const respuesta = await adaptador.obtener();
+      const nuevas = Array.isArray(respuesta) ? respuesta : respuesta.observaciones;
+      const fuente = Array.isArray(respuesta) ? adaptador.nombre : respuesta.fuente;
+      await repositorio.guardarVarias(nuevas, fuente);
       const actuales = await repositorio.ultimas(instrumentos);
-      return { origen: adaptador.nombre, desactualizado: false, observaciones: actuales };
+      return { origen: fuente, desactualizado: false, observaciones: actuales };
     } catch (err) {
       logger.error(`[cache] falló la fuente "${adaptador.nombre}": ${err.message}`);
       if (guardadas.length > 0) {

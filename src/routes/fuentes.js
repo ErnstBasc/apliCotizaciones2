@@ -1,4 +1,4 @@
-// Rutas de lectura de fuentes: GET /monedas, GET /oficial y GET /indicadores
+// Rutas de lectura de fuentes: GET /monedas, /oficial, /paralelo e /indicadores
 const { presentarCotizacion } = require('./presentadores');
 
 const manejadorMonedas = (servicio) => async (req, res, next) => {
@@ -40,12 +40,26 @@ const manejadorIndicadores = (servicio) => async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
+const manejadorParalelo = (servicio) => async (req, res, next) => {
+  try {
+    const r = await servicio.paralelo();
+    res.json({
+      base: 'USD',
+      cotizada: 'BOB',
+      origen: r.origen,
+      desactualizado: r.desactualizado,
+      paralelo: presentarCotizacion(r.observaciones[0]),
+    });
+  } catch (err) { next(err); }
+};
+
 function crearRutasFuentes(express, servicio) {
   const router = express.Router();
   router.get('/monedas', manejadorMonedas(servicio));
   router.get('/oficial', manejadorOficial(servicio));
+  router.get('/paralelo', manejadorParalelo(servicio));
   router.get('/indicadores', manejadorIndicadores(servicio));
   return router;
 }
 
-module.exports = { crearRutasFuentes, manejadorMonedas, manejadorOficial, manejadorIndicadores };
+module.exports = { crearRutasFuentes, manejadorMonedas, manejadorOficial, manejadorIndicadores, manejadorParalelo };

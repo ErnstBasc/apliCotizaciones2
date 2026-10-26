@@ -16,6 +16,7 @@ function crearServicioCotizaciones({ cache, adaptadores, cacheMin }) {
     monedas: () => leer(adaptadores.monedas, cacheMin.monedas),
     oficial: () => leer(adaptadores.oficial, cacheMin.oficial),
     indicadores: () => leer(adaptadores.indicadores, cacheMin.indicadores),
+    paralelo: () => leer(adaptadores.paralelo, cacheMin.paralelo),
   };
 }
 
