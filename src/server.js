@@ -15,6 +15,8 @@ const { crearAdaptadorBcbIndicadores } = require('./adapters/bcb/indicadores');
 const { crearAdaptadorBinance } = require('./adapters/binance');
 const { crearClienteDolarblue } = require('./adapters/dolarbluebolivia/cliente');
 const { crearAdaptadorParaleloRespaldo } = require('./adapters/dolarbluebolivia/paralelo');
+const { crearAdaptadorWallbit } = require('./adapters/dolarbluebolivia/wallbit');
+const { crearAdaptadorBancos } = require('./adapters/dolarbluebolivia/bancos');
 const { conRespaldo } = require('./adapters/conRespaldo');
 
 const config = cargarConfig();
@@ -28,6 +30,8 @@ const adaptadores = {
   monedas: verificarAdaptador(crearAdaptadorFrankfurter()),
   oficial: verificarAdaptador(crearAdaptadorBcbOficial({ obtenerTexto: obtenerPortadaBcb })),
   indicadores: verificarAdaptador(crearAdaptadorBcbIndicadores({ obtenerTexto: obtenerPortadaBcb })),
+  billeteras: verificarAdaptador(crearAdaptadorWallbit({ cliente: clienteDolarblue })),
+  bancos: verificarAdaptador(crearAdaptadorBancos({ cliente: clienteDolarblue })),
   // Paralelo: Binance P2P; si falla, lectura agregada de dolarbluebolivia
   paralelo: verificarAdaptador(conRespaldo(
     crearAdaptadorBinance(),

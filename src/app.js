@@ -4,6 +4,7 @@
 const express = require('express');
 const { crearRutaHealth } = require('./routes/health');
 const { crearRutasFuentes } = require('./routes/fuentes');
+const { crearRutasEntidades } = require('./routes/entidades');
 const { noEncontrado, manejarErrores } = require('./middleware/errores');
 
 function crearApp({ repositorio, cotizaciones, logger = console }) {
@@ -14,6 +15,7 @@ function crearApp({ repositorio, cotizaciones, logger = console }) {
   app.use('/health', crearRutaHealth(express, repositorio));
 
   app.use('/', crearRutasFuentes(express, cotizaciones));
+  app.use('/', crearRutasEntidades(express, cotizaciones));
   // Los pasos siguientes agregan aquí más rutas (indicadores, bancos, conversor, docs…).
 
   app.use(noEncontrado);
