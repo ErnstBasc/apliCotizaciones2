@@ -2,16 +2,24 @@
 // Así se puede probar con dependencias falsas, y server.js (la "raíz de composición") es el único
 // lugar donde se arma todo con piezas reales.
 const express = require('express');
+const swaggerUi = require('swagger-ui-express');
+const especificacion = require('./docs');
+const { crearCors } = require('./middleware/cors');
 const { crearRutaHealth } = require('./routes/health');
 const { crearRutasFuentes } = require('./routes/fuentes');
 const { crearRutasEntidades } = require('./routes/entidades');
 const { crearRutasCalculos } = require('./routes/calculos');
 const { noEncontrado, manejarErrores } = require('./middleware/errores');
 
-function crearApp({ repositorio, cotizaciones, calculos, logger = console }) {
+function crearApp({ repositorio, cotizaciones, calculos, corsOrigenes = [], logger = console }) {
   const app = express();
   app.disable('x-powered-by'); // no anunciar la tecnología del servidor
+  app.use(crearCors(corsOrigenes)); // lista blanca de orígenes (vacía = solo mismo origen)
   app.use(express.json({ limit: '10kb' })); // cuerpos pequeños: evita peticiones gigantes
+
+  // Documentación interactiva (Swagger UI). En el Paso 9 la raíz pasará a servir el frontend.
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(especificacion, { customSiteTitle: 'apliCotizaciones2 · API' }));
+  app.get('/', (req, res) => res.redirect('/docs'));
 
   app.use('/health', crearRutaHealth(express, repositorio));
 

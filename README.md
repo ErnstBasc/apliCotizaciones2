@@ -2,7 +2,7 @@
 
 Segundo prototipo (más avanzado) de apliCotizaciones. Proyecto de *Tecnologías Web II*.
 
-**Estado:** Paso 7. Todas las fuentes de la Fase A más cálculos: resumen (`/cotizaciones`), conversor (`/convertir`) y comparación de dónde comprar y vender dólares (`/comparacion`).
+**Estado:** Paso 8. Documentación Swagger modular en `/docs`, CORS por lista blanca y todas las rutas de la Fase A.
 
 ## Estructura
 
@@ -27,3 +27,10 @@ npm install express pg dotenv
 npm test
 npm start   # luego abrir http://localhost:3000/health
 ```
+
+## Documentación y seguridad
+
+- **Swagger UI:** http://localhost:3000/docs (la especificación está dividida en `src/docs/rutas/`, un archivo por grupo de rutas).
+- **CORS:** por lista blanca en `CORS_ORIGINS` (separados por coma). Vacío = sin orígenes externos; el frontend va en el mismo origen y no lo necesita.
+- **Ya aplicado:** consultas parametrizadas, validación por lista blanca, errores sin detalles internos, cuerpos JSON limitados a 10 kb, cabecera `X-Powered-By` desactivada, secretos en `.env`.
+- **Pendiente (futuro):** `helmet` (cabeceras de seguridad y política de contenido; requiere ajustar Swagger UI), límite de peticiones, usuario de base de datos con privilegios mínimos, HTTPS en despliegue.

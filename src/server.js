@@ -44,11 +44,13 @@ const cotizaciones = crearServicioCotizaciones({ cache, adaptadores, cacheMin: c
 
 const calculos = crearServicioCalculos({ cotizaciones });
 
-const app = crearApp({ repositorio, cotizaciones, calculos });
+const app = crearApp({ repositorio, cotizaciones, calculos, corsOrigenes: config.corsOrigenes });
 
 const servidor = app.listen(config.puerto, () => {
   console.log(`apliCotizaciones2 escuchando en http://localhost:${config.puerto}  (entorno: ${config.entorno})`);
   console.log('Vigencia del caché (min):', JSON.stringify(config.cacheMin));
+  console.log('CORS:', config.corsOrigenes.length ? config.corsOrigenes.join(', ') : 'sin orígenes externos (solo mismo origen)');
+  console.log(`Documentación: http://localhost:${config.puerto}/docs`);
 });
 
 servidor.on('error', (err) => {
