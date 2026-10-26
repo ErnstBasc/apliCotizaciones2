@@ -9,8 +9,8 @@ const fila = (i, extra = {}) => ({ instrumento: i, nombre: i, entidad: null, val
   unidad: 'por USD', fecha: '2026-10-25', estado: 'vigente', obtenidoEn: new Date('2026-10-25T12:00:00Z'), ...extra });
 
 test('presentador: venta antes que compra y omite los nulos', () => {
-  const p = presentarCotizacion(fila('BOB_OFICIAL', { entidad: 'bcb', valor: 11.88, venta: 11.88, compra: 11.88 }));
-  assert.deepStrictEqual(Object.keys(p).slice(0, 5), ['codigo', 'nombre', 'entidad', 'venta', 'compra']);
+  const p = presentarCotizacion(fila('BOB_OFICIAL', { entidad: 'bcb', entidadNombre: 'Banco Central de Bolivia', valor: 11.88, venta: 11.88, compra: 11.88 }));
+  assert.deepStrictEqual(Object.keys(p).slice(0, 6), ['codigo', 'nombre', 'entidad', 'entidad_nombre', 'venta', 'compra']);
   assert.ok(!('venta' in presentarCotizacion(fila('EUR'))));
   assert.ok(!('estado' in p));
 });

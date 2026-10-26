@@ -4,7 +4,7 @@
 const { crearObservacion } = require('../contracts/observacion');
 const { pedirTexto } = require('./http');
 
-const MONEDAS = ['EUR', 'CLP', 'ARS', 'PEN', 'BRL', 'PYG'];
+const { MONEDAS_EXTERNAS: MONEDAS } = require('../dominio/monedas');
 const URL_BASE = 'https://api.frankfurter.dev/v2/rates';
 
 function convertir(json) {

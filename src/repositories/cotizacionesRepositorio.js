@@ -16,7 +16,7 @@ const SQL_INSERTAR = `
 // Última fila de cada pareja (instrumento, entidad) con DISTINCT ON.
 const SQL_ULTIMAS = `
   SELECT DISTINCT ON (c.instrumento_id, c.entidad_id)
-         i.codigo AS instrumento, i.nombre, e.codigo AS entidad, i.unidad,
+         i.codigo AS instrumento, i.nombre, e.codigo AS entidad, e.nombre AS entidad_nombre, i.unidad,
          c.valor, c.compra, c.venta, c.estado,
          to_char(c.fecha_fuente, 'YYYY-MM-DD') AS fecha,
          c.obtenido_en
@@ -34,6 +34,7 @@ function filaAObservacion(f) {
     instrumento: f.instrumento,
     nombre: f.nombre,
     entidad: f.entidad,
+    entidadNombre: f.entidad_nombre ?? null,
     valor: aNumero(f.valor),
     compra: aNumero(f.compra),
     venta: aNumero(f.venta),

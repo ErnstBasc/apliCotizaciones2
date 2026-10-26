@@ -5,9 +5,10 @@ const express = require('express');
 const { crearRutaHealth } = require('./routes/health');
 const { crearRutasFuentes } = require('./routes/fuentes');
 const { crearRutasEntidades } = require('./routes/entidades');
+const { crearRutasCalculos } = require('./routes/calculos');
 const { noEncontrado, manejarErrores } = require('./middleware/errores');
 
-function crearApp({ repositorio, cotizaciones, logger = console }) {
+function crearApp({ repositorio, cotizaciones, calculos, logger = console }) {
   const app = express();
   app.disable('x-powered-by'); // no anunciar la tecnología del servidor
   app.use(express.json({ limit: '10kb' })); // cuerpos pequeños: evita peticiones gigantes
@@ -16,6 +17,7 @@ function crearApp({ repositorio, cotizaciones, logger = console }) {
 
   app.use('/', crearRutasFuentes(express, cotizaciones));
   app.use('/', crearRutasEntidades(express, cotizaciones));
+  app.use('/', crearRutasCalculos(express, calculos));
   // Los pasos siguientes agregan aquí más rutas (indicadores, bancos, conversor, docs…).
 
   app.use(noEncontrado);

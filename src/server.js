@@ -8,6 +8,7 @@ const { crearApp } = require('./app');
 const { verificarAdaptador } = require('./contracts/adaptador');
 const { crearServicioCache } = require('./services/cacheService');
 const { crearServicioCotizaciones } = require('./services/cotizacionesService');
+const { crearServicioCalculos } = require('./services/calculosService');
 const { crearAdaptadorFrankfurter } = require('./adapters/frankfurter');
 const { crearDescargadorPortada } = require('./adapters/bcb/portada');
 const { crearAdaptadorBcbOficial } = require('./adapters/bcb/oficial');
@@ -41,7 +42,9 @@ const adaptadores = {
 const cache = crearServicioCache({ repositorio });
 const cotizaciones = crearServicioCotizaciones({ cache, adaptadores, cacheMin: config.cacheMin });
 
-const app = crearApp({ repositorio, cotizaciones });
+const calculos = crearServicioCalculos({ cotizaciones });
+
+const app = crearApp({ repositorio, cotizaciones, calculos });
 
 const servidor = app.listen(config.puerto, () => {
   console.log(`apliCotizaciones2 escuchando en http://localhost:${config.puerto}  (entorno: ${config.entorno})`);

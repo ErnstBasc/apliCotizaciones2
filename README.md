@@ -2,7 +2,7 @@
 
 Segundo prototipo (más avanzado) de apliCotizaciones. Proyecto de *Tecnologías Web II*.
 
-**Estado:** Paso 6. Fuentes completas de la Fase A: Frankfurter (con PYG), BCB (oficial, oro, UFV, inflación), paralelo (Binance con respaldo), Wallbit y bancos. Rutas `/health`, `/monedas`, `/oficial`, `/paralelo`, `/indicadores`, `/billeteras` y `/bancos`.
+**Estado:** Paso 7. Todas las fuentes de la Fase A más cálculos: resumen (`/cotizaciones`), conversor (`/convertir`) y comparación de dónde comprar y vender dólares (`/comparacion`).
 
 ## Estructura
 
