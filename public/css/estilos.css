@@ -1,0 +1,230 @@
+/* apliCotizaciones2 · hoja de estilos
+   Idea: una pizarra de casa de cambio (cifras grandes, venta primero) sobre una página tranquila.
+   Los colores de la bandera boliviana se usan con intención: amarillo = venta en el tablero,
+   verde = mejor precio, rojo = problema. Todo el color vive en las variables de :root. */
+
+:root {
+  color-scheme: light dark;
+
+  --papel: #ecf0ea;
+  --superficie: #ffffff;
+  --tinta: #14211c;
+  --tinta-suave: #51615a;
+  --linea: #d2dad2;
+
+  --tablero: #0f2f29;
+  --tablero-texto: #f2f5f1;
+  --tablero-suave: #a9bdb4;
+  --tablero-linea: rgba(255, 255, 255, 0.14);
+
+  --amarillo: #f5c524;
+  --verde: #1d7a4b;
+  --rojo: #c4352b;
+  --rojo-claro: #ff9a8f;
+
+  --boton-fondo: #0f2f29;
+  --boton-texto: #f2f5f1;
+
+  --fuente-cifras: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", "DejaVu Sans Condensed", sans-serif;
+  --fuente-texto: "Barlow", system-ui, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --ancho: 70rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --papel: #0b1310;
+    --superficie: #121d19;
+    --tinta: #e6ede8;
+    --tinta-suave: #9db0a6;
+    --linea: #263630;
+    --tablero: #12392f;
+    --verde: #4cc489;
+    --rojo: #ff8378;
+    --boton-fondo: #f5c524;
+    --boton-texto: #14211c;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--papel);
+  color: var(--tinta);
+  font: 400 1.0625rem/1.6 var(--fuente-texto);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, p { margin: 0; }
+button, input, select { font: inherit; color: inherit; }
+
+.contenedor { width: min(100% - 2rem, var(--ancho)); margin-inline: auto; }
+
+.bandera {
+  height: 6px;
+  background: linear-gradient(90deg, #d52b1e 0 33.34%, #f9e300 33.34% 66.67%, #007934 66.67% 100%);
+}
+
+/* ---------- Cabecera ---------- */
+.cabecera {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 0.75rem 1.5rem; padding-block: 1rem;
+}
+.marca { font: 700 1.5rem/1 var(--fuente-cifras); letter-spacing: 0.01em; }
+.acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; font-size: 0.95rem; }
+.actualizado { color: var(--tinta-suave); }
+.enlace { color: var(--tinta); text-underline-offset: 0.2em; }
+
+/* ---------- Botones ---------- */
+.boton {
+  border: 0; border-radius: 6px; padding: 0.55rem 1rem; cursor: pointer; font-weight: 500;
+  transition: background-color 0.15s, opacity 0.15s;
+}
+.boton:disabled { opacity: 0.55; cursor: progress; }
+.boton-principal { background: var(--boton-fondo); color: var(--boton-texto); padding: 0.75rem 1.5rem; font-weight: 600; width: 100%; }
+.boton-suave { background: transparent; color: var(--tinta); box-shadow: inset 0 0 0 1.5px var(--linea); }
+.boton-suave:hover:not(:disabled) { box-shadow: inset 0 0 0 1.5px var(--tinta-suave); }
+.boton-texto { background: none; color: var(--tinta); text-decoration: underline; text-underline-offset: 0.2em; padding: 0.6rem 0.25rem; }
+.boton-icono {
+  display: grid; place-items: center; width: 2.9rem; height: 2.9rem; border-radius: 50%; cursor: pointer;
+  border: 1.5px solid var(--linea); background: var(--superficie); align-self: end;
+}
+.boton-icono:hover { border-color: var(--tinta-suave); }
+
+:focus-visible { outline: 3px solid var(--verde); outline-offset: 2px; }
+
+/* ---------- Tablero (lo memorable de la página) ---------- */
+.tablero {
+  margin-top: 0.5rem;
+  padding: clamp(1.25rem, 4vw, 2.75rem);
+  background: var(--tablero);
+  color: var(--tablero-texto);
+  border-radius: 14px;
+}
+.tablero h1 { font: 600 clamp(1.9rem, 4.5vw, 3rem)/1.05 var(--fuente-cifras); letter-spacing: 0.005em; }
+.tablero-ayuda { margin-top: 0.5rem; max-width: 42rem; color: var(--tablero-suave); }
+.tablero-ayuda strong { color: var(--tablero-texto); font-weight: 600; }
+
+.filas { margin-top: 1.5rem; }
+.fila-tablero {
+  display: grid; grid-template-columns: minmax(9rem, 1fr) 1.5fr 1fr; align-items: end;
+  gap: 0.75rem 1.5rem; padding-block: 1.25rem; border-top: 1px solid var(--tablero-linea);
+}
+.fila-nombre h3 { font: 600 1.6rem/1.1 var(--fuente-cifras); }
+.fila-nombre p { color: var(--tablero-suave); font-size: 0.95rem; }
+.celda { display: flex; flex-direction: column; }
+.etiqueta { font-size: 0.92rem; color: var(--tablero-suave); }
+.cifra { font-family: var(--fuente-cifras); font-weight: 600; line-height: 0.95; font-variant-numeric: tabular-nums; }
+.cifra-venta { font-size: clamp(3.5rem, 10vw, 6.75rem); color: var(--amarillo); }
+.cifra-compra { font-size: clamp(2.4rem, 6.5vw, 4.25rem); color: var(--tablero-texto); opacity: 0.85; }
+
+.brecha { padding-top: 1.1rem; border-top: 1px solid var(--tablero-linea); color: var(--tablero-suave); }
+.brecha strong { color: var(--tablero-texto); font-weight: 600; }
+.aviso-tablero { margin-top: 0.5rem; color: var(--rojo-claro); font-size: 0.95rem; }
+
+/* Única animación autónoma: las cifras suben al cargar por primera vez, como un tablero que se actualiza */
+.anima .cifra { animation: subir 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--i) * 110ms); }
+@keyframes subir { from { opacity: 0; transform: translateY(0.35em); } }
+
+/* ---------- Bloques ---------- */
+.bloque { margin-top: clamp(2.5rem, 6vw, 4rem); }
+.bloque h2, .rejilla-herramientas h2 { font: 600 clamp(1.7rem, 3.5vw, 2.2rem)/1.1 var(--fuente-cifras); margin-bottom: 1.1rem; }
+
+.cargando { color: var(--tinta-suave); }
+.nota { margin-top: 1rem; font-size: 0.92rem; color: var(--tinta-suave); max-width: 46rem; }
+
+.error { border-left: 4px solid var(--rojo); background: var(--superficie); padding: 0.9rem 1.1rem; border-radius: 0 8px 8px 0; display: grid; gap: 0.6rem; justify-items: start; }
+
+/* ---------- Comparación ---------- */
+.rejilla-comparacion { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); gap: 2rem 3.5rem; }
+.columna h3 { font: 600 1.35rem/1.2 var(--fuente-cifras); letter-spacing: 0.01em; }
+.ayuda-columna { color: var(--tinta-suave); font-size: 0.95rem; margin-bottom: 0.5rem; }
+.lista-lugares { list-style: none; margin: 0; padding: 0; }
+.lugar {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: 0.7rem 0.8rem; border-bottom: 1px solid var(--linea);
+}
+.lugar.mejor {
+  background: color-mix(in srgb, var(--verde) 13%, transparent);
+  box-shadow: inset 4px 0 0 var(--verde);
+  border-radius: 6px; border-bottom-color: transparent;
+}
+.lugar.referencia { border-bottom-style: dashed; color: var(--tinta-suave); }
+.lugar.referencia .cifra-lista { font-weight: 500; }
+.lugar-info { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.6rem; min-width: 0; }
+.lugar-nombre { font-weight: 500; }
+.tipo { font-size: 0.82rem; color: var(--tinta-suave); border: 1px solid var(--linea); border-radius: 999px; padding: 0 0.55rem; }
+.sello { font-size: 0.82rem; font-weight: 600; background: var(--verde); color: #fff; border-radius: 999px; padding: 0.05rem 0.6rem; }
+@media (prefers-color-scheme: dark) { .sello { color: #07140e; } }
+.lugar-precio { display: flex; flex-direction: column; align-items: flex-end; text-align: right; flex-shrink: 0; }
+.cifra-lista { font: 600 1.85rem/1 var(--fuente-cifras); font-variant-numeric: tabular-nums; }
+.dif, .por { font-size: 0.82rem; color: var(--tinta-suave); line-height: 1.3; }
+
+/* ---------- Herramientas: conversor e indicadores ---------- */
+.rejilla-herramientas { display: grid; grid-template-columns: 1fr; gap: 2.5rem 3.5rem; }
+@media (min-width: 56rem) { .rejilla-herramientas { grid-template-columns: 1.25fr 1fr; } }
+
+.panel { background: var(--superficie); border: 1px solid var(--linea); border-radius: 12px; padding: clamp(1.1rem, 3vw, 1.75rem); }
+.panel form { display: grid; gap: 1.1rem; }
+.campo { display: grid; gap: 0.3rem; min-width: 0; }
+.campo label { font-weight: 500; font-size: 0.95rem; }
+.campo input, .campo select {
+  width: 100%; height: 2.9rem; padding-inline: 0.8rem; background: var(--superficie);
+  border: 1.5px solid var(--linea); border-radius: 6px;
+}
+.campo input { font-family: var(--fuente-cifras); font-size: 1.5rem; font-weight: 600; }
+.campo input:hover, .campo select:hover { border-color: var(--tinta-suave); }
+.ayuda-campo { font-size: 0.88rem; color: var(--tinta-suave); }
+.par-monedas { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.6rem; align-items: end; }
+
+.opciones { border: 1px solid var(--linea); border-radius: 8px; padding: 0.8rem 1rem 1rem; display: grid; gap: 0.6rem; min-width: 0; }
+.opciones[hidden] { display: none; }
+.opciones legend { padding-inline: 0.4rem; font-weight: 500; font-size: 0.95rem; }
+.grupo-radio { display: flex; flex-wrap: wrap; gap: 0.4rem 1.5rem; }
+.grupo-radio label { display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; }
+.grupo-radio input { accent-color: var(--verde); width: 1.1rem; height: 1.1rem; }
+
+.resultado { margin-top: 1.25rem; padding-top: 1.1rem; border-top: 1px solid var(--linea); min-height: 4.5rem; }
+.resultado-cifra { font: 600 clamp(2.2rem, 6vw, 3.2rem)/1 var(--fuente-cifras); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.resultado-detalle { color: var(--tinta-suave); font-size: 0.95rem; margin-top: 0.3rem; }
+.resultado-error { color: var(--rojo); font-weight: 500; }
+
+.datos { margin: 0; display: grid; gap: 0; }
+.dato { padding-block: 0.8rem; border-bottom: 1px solid var(--linea); display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+.dato:first-child { padding-top: 0; }
+.dato dt { font-weight: 500; }
+.dato dd { margin: 0; display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
+.no-disponible { color: var(--tinta-suave); font-style: italic; }
+
+/* ---------- Monedas ---------- */
+.tabla-envoltura { overflow-x: auto; }
+.tabla-monedas { width: 100%; border-collapse: collapse; min-width: 20rem; }
+.tabla-monedas th, .tabla-monedas td { padding: 0.8rem 0.6rem; border-bottom: 1px solid var(--linea); vertical-align: middle; text-align: left; }
+.tabla-monedas thead th { font-weight: 500; font-size: 0.92rem; color: var(--tinta-suave); border-bottom-color: var(--tinta-suave); }
+.tabla-monedas tbody th { font-weight: 500; }
+.moneda { display: flex; align-items: center; gap: 0.7rem; }
+.tabla-monedas .num { text-align: right; }
+.tabla-monedas td.num > * { display: block; }
+.codigo { font: 600 1.05rem/1 var(--fuente-cifras); border: 1.5px solid var(--tinta); border-radius: 4px; padding: 0.2rem 0.45rem; min-width: 3rem; text-align: center; }
+.nombre-moneda { font-weight: 400; }
+@media (max-width: 40rem) {
+  .col-paralelo { display: none; }
+  .nombre-moneda { display: none; }
+}
+
+/* ---------- Pie ---------- */
+.pie { margin-top: clamp(3rem, 7vw, 5rem); padding-block: 1.5rem 3rem; border-top: 1px solid var(--linea); color: var(--tinta-suave); font-size: 0.9rem; display: grid; gap: 0.5rem; }
+.pie p { max-width: 52rem; }
+
+/* ---------- Móvil ---------- */
+@media (max-width: 40rem) {
+  .fila-tablero { grid-template-columns: 1fr 1fr; }
+  .fila-nombre { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; }
+  .lugar { align-items: flex-start; }
+  .par-monedas { grid-template-columns: 1fr; }
+  .boton-icono { justify-self: center; transform: rotate(90deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

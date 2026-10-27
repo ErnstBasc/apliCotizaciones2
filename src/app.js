@@ -1,6 +1,7 @@
 // Fábrica de la aplicación Express. NO abre puertos ni conexiones: recibe sus dependencias ya hechas.
 // Así se puede probar con dependencias falsas, y server.js (la "raíz de composición") es el único
 // lugar donde se arma todo con piezas reales.
+const path = require('path');
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const especificacion = require('./docs');
@@ -17,9 +18,11 @@ function crearApp({ repositorio, cotizaciones, calculos, corsOrigenes = [], logg
   app.use(crearCors(corsOrigenes)); // lista blanca de orígenes (vacía = solo mismo origen)
   app.use(express.json({ limit: '10kb' })); // cuerpos pequeños: evita peticiones gigantes
 
-  // Documentación interactiva (Swagger UI). En el Paso 9 la raíz pasará a servir el frontend.
+  // Documentación interactiva (Swagger UI)
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(especificacion, { customSiteTitle: 'apliCotizaciones2 · API' }));
-  app.get('/', (req, res) => res.redirect('/docs'));
+
+  // Frontend estático (HTML, CSS y JS sin frameworks) en el mismo origen que la API: no necesita CORS
+  app.use(express.static(path.join(__dirname, '..', 'public')));
 
   app.use('/health', crearRutaHealth(express, repositorio));
 

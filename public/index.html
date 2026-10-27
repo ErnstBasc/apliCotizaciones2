@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>El dólar hoy en Bolivia - apliCotizaciones2</title>
+  <meta name="description" content="Dólar oficial, paralelo, bancos y billeteras en Bolivia, más monedas vecinas, oro, UFV e inflación.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+  <div class="bandera" aria-hidden="true"></div>
+
+  <header class="cabecera contenedor">
+    <span class="marca">apliCotizaciones2</span>
+    <div class="acciones">
+      <span id="actualizado" class="actualizado" role="status">Cargando datos…</span>
+      <button type="button" id="btn-actualizar" class="boton boton-suave">Actualizar</button>
+      <a href="/docs" class="enlace">Documentación de la API</a>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <section class="tablero" aria-labelledby="t-tablero">
+      <h1 id="t-tablero">El dólar hoy en Bolivia</h1>
+      <p class="tablero-ayuda">Bolivianos por 1 dólar. <strong>Venta</strong> es lo que pagas al comprarlo; <strong>compra</strong>, lo que recibes al vender el tuyo.</p>
+      <div id="tablero-datos"><p class="cargando">Cargando…</p></div>
+    </section>
+
+    <section class="bloque" aria-labelledby="t-comparacion">
+      <h2 id="t-comparacion">Dónde conviene</h2>
+      <div id="comparacion-datos"><p class="cargando">Cargando…</p></div>
+    </section>
+
+    <div class="bloque rejilla-herramientas">
+      <section aria-labelledby="t-conversor">
+        <h2 id="t-conversor">Convertir</h2>
+        <div class="panel">
+          <form id="form-conversor" novalidate>
+            <div class="campo">
+              <label for="monto">Monto</label>
+              <input id="monto" name="monto" inputmode="decimal" autocomplete="off" value="100" aria-describedby="ayuda-monto">
+              <p id="ayuda-monto" class="ayuda-campo">Sin separador de miles. Ejemplos: 1000 o 25,5</p>
+            </div>
+            <div class="par-monedas">
+              <div class="campo"><label for="de">De</label><select id="de" name="de"></select></div>
+              <button type="button" id="invertir" class="boton-icono" aria-label="Invertir las monedas">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></svg>
+              </button>
+              <div class="campo"><label for="a">A</label><select id="a" name="a"></select></div>
+            </div>
+            <fieldset id="opciones-bob" class="opciones" hidden>
+              <legend>Dólar en bolivianos</legend>
+              <div class="grupo-radio">
+                <label><input type="radio" name="tasa" value="oficial" checked> Oficial</label>
+                <label><input type="radio" name="tasa" value="paralelo"> Paralelo</label>
+              </div>
+              <div class="grupo-radio">
+                <label><input type="radio" name="lado" value="venta" checked> Precio de venta</label>
+                <label><input type="radio" name="lado" value="compra"> Precio de compra</label>
+              </div>
+              <p class="ayuda-campo">Para comprar dólares corresponde la venta; para venderlos, la compra.</p>
+            </fieldset>
+            <button type="submit" class="boton boton-principal">Convertir</button>
+          </form>
+          <div id="resultado" class="resultado" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section aria-labelledby="t-indicadores">
+        <h2 id="t-indicadores">Oro, UFV e inflación</h2>
+        <div id="indicadores-datos"><p class="cargando">Cargando…</p></div>
+      </section>
+    </div>
+
+    <section class="bloque" aria-labelledby="t-monedas">
+      <h2 id="t-monedas">Monedas vecinas y el euro</h2>
+      <div id="monedas-datos"><p class="cargando">Cargando…</p></div>
+    </section>
+  </main>
+
+  <footer class="pie contenedor">
+    <p>Fuentes: Banco Central de Bolivia, Binance P2P (con respaldo de dolarbluebolivia.click), Frankfurter y las pizarras que publica cada banco. Los precios de bancos y billeteras pueden diferir de lo que cobran en ventanilla o en su app.</p>
+    <p>Proyecto universitario de Tecnologías Web II. Es informativo y no constituye asesoría financiera.</p>
+  </footer>
+
+  <script type="module" src="/js/principal.js"></script>
+</body>
+</html>

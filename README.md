@@ -2,7 +2,7 @@
 
 Segundo prototipo (más avanzado) de apliCotizaciones. Proyecto de *Tecnologías Web II*.
 
-**Estado:** Paso 8. Documentación Swagger modular en `/docs`, CORS por lista blanca y todas las rutas de la Fase A.
+**Estado:** Paso 9. Frontend sencillo (HTML, CSS y JavaScript sin frameworks) servido por Express en `/`, más Swagger en `/docs`, CORS y todas las rutas de la Fase A.
 
 ## Estructura
 
