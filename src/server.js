@@ -5,46 +5,17 @@ const { cargarConfig } = require('./config');
 const { crearPool } = require('./repositories/pool');
 const { crearRepositorioCotizaciones } = require('./repositories/cotizacionesRepositorio');
 const { crearApp } = require('./app');
-const { verificarAdaptador } = require('./contracts/adaptador');
 const { crearServicioCache } = require('./services/cacheService');
 const { crearServicioCotizaciones } = require('./services/cotizacionesService');
 const { crearServicioCalculos } = require('./services/calculosService');
-const { crearAdaptadorFrankfurter } = require('./adapters/frankfurter');
-const { crearDescargadorPortada } = require('./adapters/bcb/portada');
-const { crearAdaptadorBcbOficial } = require('./adapters/bcb/oficial');
-const { crearAdaptadorBcbIndicadores } = require('./adapters/bcb/indicadores');
-const { crearAdaptadorBinance } = require('./adapters/binance');
-const { crearClienteDolarblue } = require('./adapters/dolarbluebolivia/cliente');
-const { crearAdaptadorParaleloRespaldo } = require('./adapters/dolarbluebolivia/paralelo');
-const { crearAdaptadorWallbit } = require('./adapters/dolarbluebolivia/wallbit');
-const { crearAdaptadoresPlataformas } = require('./adapters/dolarbluebolivia/plataformas');
-const { crearAdaptadorBancos } = require('./adapters/dolarbluebolivia/bancos');
-const { conRespaldo } = require('./adapters/conRespaldo');
-const { combinar } = require('./adapters/combinar');
+const { crearAdaptadores } = require('./composicion');
 
 const config = cargarConfig();
 const pool = crearPool(config.db);
 const repositorio = crearRepositorioCotizaciones(pool);
 
 // Adaptadores (una fuente externa cada uno) → caché → servicio de cotizaciones
-const obtenerPortadaBcb = crearDescargadorPortada();
-const clienteDolarblue = crearClienteDolarblue();
-const adaptadores = {
-  monedas: verificarAdaptador(crearAdaptadorFrankfurter()),
-  oficial: verificarAdaptador(crearAdaptadorBcbOficial({ obtenerTexto: obtenerPortadaBcb })),
-  indicadores: verificarAdaptador(crearAdaptadorBcbIndicadores({ obtenerTexto: obtenerPortadaBcb })),
-  // Billeteras y plataformas: Wallbit, Airtm, Takenos, El Dorado y Bitget en un solo adaptador; si una falla, las demás siguen
-  billeteras: verificarAdaptador(combinar([
-    crearAdaptadorWallbit({ cliente: clienteDolarblue }),
-    ...crearAdaptadoresPlataformas({ cliente: clienteDolarblue }),
-  ])),
-  bancos: verificarAdaptador(crearAdaptadorBancos({ cliente: clienteDolarblue })),
-  // Paralelo: Binance P2P; si falla, lectura agregada de dolarbluebolivia
-  paralelo: verificarAdaptador(conRespaldo(
-    crearAdaptadorBinance(),
-    crearAdaptadorParaleloRespaldo({ cliente: clienteDolarblue })
-  )),
-};
+const adaptadores = crearAdaptadores();
 const cache = crearServicioCache({ repositorio });
 const cotizaciones = crearServicioCotizaciones({ cache, adaptadores, cacheMin: config.cacheMin });
 

@@ -34,6 +34,15 @@ function cargarConfig(env = process.env) {
       billeteras: minutosDesdeEnv(env, 'CACHE_BILLETERAS_MIN', 10),
       bancos: minutosDesdeEnv(env, 'CACHE_BANCOS_MIN', 30),
     },
+    // Cada cuántos minutos el recolector consulta cada fuente por su cuenta. 0 = esa tarea queda desactivada.
+    recolectorMin: {
+      paralelo: minutosDesdeEnv(env, 'RECOLECTOR_PARALELO_MIN', 15),
+      billeteras: minutosDesdeEnv(env, 'RECOLECTOR_BILLETERAS_MIN', 15),
+      bancos: minutosDesdeEnv(env, 'RECOLECTOR_BANCOS_MIN', 60),
+      oficial: minutosDesdeEnv(env, 'RECOLECTOR_OFICIAL_MIN', 60),
+      indicadores: minutosDesdeEnv(env, 'RECOLECTOR_INDICADORES_MIN', 360),
+      monedas: minutosDesdeEnv(env, 'RECOLECTOR_MONEDAS_MIN', 360),
+    },
     corsOrigenes: listaDesdeEnv(env, 'CORS_ORIGINS'),
   };
 }

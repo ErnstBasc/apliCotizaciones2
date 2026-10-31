@@ -5,8 +5,11 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
+    "recolector": "node src/recolector.js",
     "dev": "node --watch src/server.js",
-    "test": "node --test"
+    "test": "node --test",
+    "datos:ficticios": "node scripts/sembrarDatosFicticios.js",
+    "datos:borrar-ficticios": "node scripts/sembrarDatosFicticios.js --borrar"
   },
   "engines": {
     "node": ">=18"
