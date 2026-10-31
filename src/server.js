@@ -10,6 +10,13 @@ const { crearServicioCotizaciones } = require('./services/cotizacionesService');
 const { crearServicioCalculos } = require('./services/calculosService');
 const { crearServicioHistorico } = require('./services/historicoService');
 const { crearAdaptadores } = require('./composicion');
+const crypto = require('node:crypto');
+const { crearRepositorioUsuarios } = require('./repositories/usuariosRepositorio');
+const { crearServicioUsuarios } = require('./services/usuariosService');
+const { crearMailerConsola } = require('./mailer/consola');
+const { crearSesiones } = require('./utilidades/sesiones');
+const claves = require('./utilidades/claves');
+const { crearAutenticacion, mismoOrigen } = require('./middleware/autenticacion');
 
 const config = cargarConfig();
 const pool = crearPool(config.db);
@@ -23,7 +30,19 @@ const cotizaciones = crearServicioCotizaciones({ cache, adaptadores, cacheMin: c
 const calculos = crearServicioCalculos({ cotizaciones });
 const historico = crearServicioHistorico({ repositorio });
 
-const app = crearApp({ repositorio, cotizaciones, calculos, historico, corsOrigenes: config.corsOrigenes });
+// Cuentas de usuario. El mailer es intercambiable: hoy imprime en consola; en la Etapa 6 se agrega el SMTP real.
+let secretoSesion = config.auth.secreto;
+if (!secretoSesion) {
+  secretoSesion = crypto.randomBytes(32).toString('hex');
+  console.warn('AVISO: falta JWT_SECRET en .env; se usa uno temporal y las sesiones se cerrarán al reiniciar.');
+}
+if (config.correo.modo !== 'consola') throw new Error(`MAIL_MODO "${config.correo.modo}" no existe todavía (por ahora solo "consola")`);
+const mailer = crearMailerConsola();
+const usuarios = crearServicioUsuarios({ repositorio: crearRepositorioUsuarios(pool), mailer, claves, urlPublica: config.auth.urlPublica });
+const sesiones = crearSesiones({ secreto: secretoSesion, duracionDias: config.auth.duracionDias, segura: config.auth.cookieSegura });
+const cuentas = { usuarios, sesiones, autenticacion: crearAutenticacion({ sesiones, usuarios }), mismoOrigen };
+
+const app = crearApp({ repositorio, cotizaciones, calculos, historico, cuentas, corsOrigenes: config.corsOrigenes });
 
 const servidor = app.listen(config.puerto, () => {
   console.log(`apliCotizaciones2 escuchando en http://localhost:${config.puerto}  (entorno: ${config.entorno})`);

@@ -11,9 +11,11 @@ const { crearRutasFuentes } = require('./routes/fuentes');
 const { crearRutasEntidades } = require('./routes/entidades');
 const { crearRutasCalculos } = require('./routes/calculos');
 const { crearRutasHistorico } = require('./routes/historico');
+const { crearRutasUsuarios } = require('./routes/usuarios');
 const { noEncontrado, manejarErrores } = require('./middleware/errores');
 
-function crearApp({ repositorio, cotizaciones, calculos, historico, corsOrigenes = [], logger = console }) {
+// `cuentas` agrupa lo de usuarios: { usuarios, sesiones, autenticacion, mismoOrigen } (opcional: sin él no hay rutas /usuarios)
+function crearApp({ repositorio, cotizaciones, calculos, historico, cuentas, corsOrigenes = [], logger = console }) {
   const app = express();
   app.disable('x-powered-by'); // no anunciar la tecnología del servidor
   app.use(crearCors(corsOrigenes)); // lista blanca de orígenes (vacía = solo mismo origen)
@@ -31,6 +33,7 @@ function crearApp({ repositorio, cotizaciones, calculos, historico, corsOrigenes
   app.use('/', crearRutasEntidades(express, cotizaciones));
   app.use('/', crearRutasCalculos(express, calculos));
   app.use('/', crearRutasHistorico(express, historico));
+  if (cuentas) app.use('/usuarios', crearRutasUsuarios(express, cuentas));
   // Los pasos siguientes agregan aquí más rutas (indicadores, bancos, conversor, docs…).
 
   app.use(noEncontrado);

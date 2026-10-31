@@ -11,7 +11,8 @@ const especificacion = {
       'Backend (Express + PostgreSQL) con tipos de cambio y cotizaciones para Bolivia: dólar oficial (BCB), paralelo (Binance P2P), ' +
       'monedas vecinas y el euro, oro, UFV, inflación, billeteras y bancos.\n\n' +
       '**Convenciones:** todo se expresa como "1 USD = X". En el dólar a boliviano se muestra primero la **venta** (lo que pagas) y luego la **compra** (lo que recibes). ' +
-      'Cada fuente tiene un caché en PostgreSQL; si una fuente falla se devuelve el último valor guardado con `desactualizado: true`.',
+      'Cada fuente tiene un caché en PostgreSQL; si una fuente falla se devuelve el último valor guardado con `desactualizado: true`.\n\n' +
+      '**Cuentas:** las rutas de `/usuarios` usan JSON en el cuerpo. La sesión es una cookie `httpOnly`; las rutas marcadas con candado la exigen.',
   },
   servers: [{ url: '/', description: 'Servidor actual' }],
   tags: [
@@ -19,6 +20,7 @@ const especificacion = {
     { name: 'Fuentes', description: 'Cada fuente por separado, con su caché' },
     { name: 'Entidades', description: 'Dólar en billeteras y bancos' },
     { name: 'Histórico', description: 'Evolución diaria del dólar oficial y paralelo' },
+    { name: 'Usuarios', description: 'Cuentas: registro, sesión (cookie httpOnly), verificación de correo, recuperación y baja' },
     { name: 'Cálculos', description: 'Resumen, conversión y comparación calculados a partir de las fuentes' },
   ],
   paths: {
@@ -27,8 +29,14 @@ const especificacion = {
     ...require('./rutas/entidades'),
     ...require('./rutas/calculos'),
     ...require('./rutas/historico'),
+    ...require('./rutas/usuarios'),
   },
-  components: { schemas: esquemas },
+  components: {
+    schemas: esquemas,
+    securitySchemes: {
+      sesion: { type: 'apiKey', in: 'cookie', name: 'sesion', description: 'Cookie httpOnly con un JWT que el servidor entrega al ingresar (en HTTPS se llama `__Host-sesion`). El navegador la envía sola; en Swagger UI basta con ingresar primero con `POST /usuarios/ingresar`.' },
+    },
+  },
 };
 
 module.exports = especificacion;

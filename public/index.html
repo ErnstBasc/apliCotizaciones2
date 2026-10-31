@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>El dólar hoy en Bolivia - apliCotizaciones2</title>
+  <!-- Los enlaces de los correos traen un código en la dirección: que no viaje como Referer a terceros (CDN, fuentes) -->
+  <meta name="referrer" content="no-referrer">
   <meta name="description" content="Dólar oficial, paralelo, bancos y billeteras en Bolivia, más monedas vecinas, oro, UFV e inflación.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,6 +21,7 @@
       <span id="actualizado" class="actualizado" role="status">Cargando datos…</span>
       <button type="button" id="btn-actualizar" class="boton boton-suave">Actualizar</button>
       <a href="/docs" class="enlace">Documentación de la API</a>
+      <button type="button" id="btn-cuenta" class="boton boton-suave boton-cuenta" aria-haspopup="dialog">Ingresar</button>
     </div>
   </header>
 
@@ -111,6 +114,14 @@
       <div id="monedas-datos"><p class="cargando">Cargando…</p></div>
     </section>
   </main>
+
+  <dialog id="dialogo-cuenta" class="dialogo" aria-labelledby="dialogo-titulo">
+    <div class="dialogo-cabecera">
+      <h2 id="dialogo-titulo" tabindex="-1">Tu cuenta</h2>
+      <button type="button" id="dialogo-cerrar" class="boton-cerrar" aria-label="Cerrar">×</button>
+    </div>
+    <div id="dialogo-contenido"></div>
+  </dialog>
 
   <footer class="pie contenedor">
     <p>Fuentes: Banco Central de Bolivia, Binance P2P (con respaldo de dolarbluebolivia.click), Frankfurter, dolarbluebolivia.click (billeteras, plataformas y bancos) y las pizarras que publica cada banco. Los precios de bancos y billeteras pueden diferir de lo que cobran en ventanilla o en su app.</p>

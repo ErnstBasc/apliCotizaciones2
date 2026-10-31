@@ -26,6 +26,20 @@ const esquemas = {
       estado: { type: 'string', enum: ['desactualizado'], description: 'Solo aparece si el precio está desactualizado' },
     },
   },
+  Usuario: {
+    type: 'object',
+    properties: {
+      id: { type: 'integer', example: 12 },
+      correo: { type: 'string', example: 'ana@ejemplo.com' },
+      rol: { type: 'string', enum: ['registrado', 'premium'], description: 'Hoy todos son "registrado"; "premium" queda reservado para una función futura' },
+      verificado: { type: 'boolean', description: 'true si ya confirmó su correo (requisito para CSV y alertas)' },
+      creadoEn: { type: 'string', format: 'date-time' },
+    },
+  },
+  Mensaje: {
+    type: 'object',
+    properties: { mensaje: { type: 'string', example: 'Operación realizada' } },
+  },
   Error: {
     type: 'object',
     properties: {

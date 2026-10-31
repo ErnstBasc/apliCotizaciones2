@@ -28,3 +28,16 @@ test('lee puerto y base desde el entorno', () => {
   assert.strictEqual(c.puerto, 4000);
   assert.strictEqual(c.db.database, 'otra');
 });
+
+test('auth: sin JWT_SECRET en desarrollo no falla (server.js genera uno); en producción sí; un secreto corto siempre falla', () => {
+  assert.strictEqual(cargarConfig({}).auth.secreto, undefined);
+  assert.throws(() => cargarConfig({ NODE_ENV: 'production' }), /JWT_SECRET/);
+  assert.throws(() => cargarConfig({ JWT_SECRET: 'corto' }), /32 caracteres/);
+  const c = cargarConfig({ NODE_ENV: 'production', JWT_SECRET: 'k'.repeat(32), APP_URL: 'https://cotiza.example/' });
+  assert.strictEqual(c.auth.cookieSegura, true);
+  assert.strictEqual(c.auth.urlPublica, 'https://cotiza.example');
+  assert.strictEqual(cargarConfig({ PORT: '4000' }).auth.urlPublica, 'http://localhost:4000');
+  assert.strictEqual(cargarConfig({}).auth.cookieSegura, false);
+  assert.strictEqual(cargarConfig({}).auth.duracionDias, 7);
+  assert.strictEqual(cargarConfig({}).correo.modo, 'consola');
+});

@@ -39,4 +39,49 @@ function validarHistorico(query) {
   return { serie, dias };
 }
 
-module.exports = { validarConversion, validarHistorico };
+// ---- Cuentas de usuario (cuerpo JSON) ----
+const CLAVE_MIN = 10;
+const CLAVE_MAX = 128;
+
+function cuerpoObjeto(cuerpo) {
+  if (!cuerpo || typeof cuerpo !== 'object' || Array.isArray(cuerpo)) throw new ErrorValidacion('El cuerpo de la petición debe ser un objeto JSON');
+  return cuerpo;
+}
+function campoTexto(cuerpo, nombre) {
+  const v = cuerpoObjeto(cuerpo)[nombre];
+  if (typeof v !== 'string' || v === '') throw new ErrorValidacion(`Falta el campo "${nombre}"`);
+  return v;
+}
+function correo(cuerpo) {
+  const v = campoTexto(cuerpo, 'correo').trim().toLowerCase();
+  if (v.length > 254 || !/^[^\s@]{1,64}@[^\s@.]+(\.[^\s@.]+)*\.[^\s@.]{2,}$/.test(v)) throw new ErrorValidacion('Escribe un correo válido');
+  return v;
+}
+function claveNueva(cuerpo, nombre = 'clave') {
+  const v = campoTexto(cuerpo, nombre);
+  if (v.length < CLAVE_MIN || v.length > CLAVE_MAX) throw new ErrorValidacion(`La contraseña debe tener entre ${CLAVE_MIN} y ${CLAVE_MAX} caracteres`);
+  return v;
+}
+function claveExistente(cuerpo, nombre = 'clave') { // al ingresar no se exige el largo mínimo, solo un tope para no procesar textos enormes
+  const v = campoTexto(cuerpo, nombre);
+  if (v.length > CLAVE_MAX) throw new ErrorValidacion('Contraseña demasiado larga');
+  return v;
+}
+function token(cuerpo) {
+  const v = campoTexto(cuerpo, 'token');
+  if (!/^[A-Za-z0-9_-]{43}$/.test(v)) throw new ErrorValidacion('El enlace no es válido o ya venció');
+  return v;
+}
+
+const validarRegistro = (b) => ({ correo: correo(b), clave: claveNueva(b) });
+const validarIngreso = (b) => ({ correo: correo(b), clave: claveExistente(b) });
+const validarCorreo = (b) => ({ correo: correo(b) });
+const validarToken = (b) => ({ token: token(b) });
+const validarRestablecer = (b) => ({ token: token(b), clave: claveNueva(b) });
+const validarCambioClave = (b) => ({ claveActual: claveExistente(b, 'claveActual'), claveNueva: claveNueva(b, 'claveNueva') });
+const validarEliminacion = (b) => ({ clave: claveExistente(b) });
+
+module.exports = {
+  validarConversion, validarHistorico, validarRegistro, validarIngreso, validarCorreo, validarToken,
+  validarRestablecer, validarCambioClave, validarEliminacion, CLAVE_MIN, CLAVE_MAX,
+};

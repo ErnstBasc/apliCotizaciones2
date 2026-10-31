@@ -9,6 +9,7 @@ import { pintarMonedas } from './vistas/monedas.js';
 import { pintarIndicadores } from './vistas/indicadores.js';
 import { iniciarConversor } from './vistas/conversor.js';
 import { iniciarHistorico } from './vistas/historico.js';
+import { iniciarCuenta } from './vistas/cuenta.js';
 
 const REFRESCO_MS = 5 * 60_000;
 const $ = (id) => document.getElementById(id);
@@ -52,6 +53,7 @@ async function actualizarTodo() {
   $('actualizado').textContent = `${todoBien ? 'Actualizado' : 'Actualizado parcialmente'} a las ${hora(new Date())}`;
 }
 
+iniciarCuenta(); // la cuenta es independiente del resto: si falla, la página de precios sigue funcionando
 const recargarHistorico = iniciarHistorico();
 const convertir = iniciarConversor();
 $('btn-actualizar').addEventListener('click', () => { actualizarTodo(); convertir(); });
