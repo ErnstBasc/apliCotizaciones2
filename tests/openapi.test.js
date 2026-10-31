@@ -15,7 +15,7 @@ function referencias(obj, acumulado = []) {
 
 test('la documentación cubre exactamente las rutas de la API', () => {
   assert.deepStrictEqual(Object.keys(spec.paths).sort(), [
-    '/bancos', '/billeteras', '/comparacion', '/convertir', '/cotizaciones', '/health', '/indicadores', '/monedas', '/oficial', '/paralelo',
+    '/bancos', '/billeteras', '/comparacion', '/convertir', '/cotizaciones', '/health', '/historico', '/indicadores', '/monedas', '/oficial', '/paralelo',
   ]);
 });
 

@@ -1,0 +1,48 @@
+const { errorRef, json } = require('../componentes');
+const { SELECCIONES, DIAS_PERMITIDOS } = require('../../dominio/historico');
+
+const punto = {
+  type: 'object',
+  properties: {
+    fecha: { type: 'string', example: '2026-10-30' },
+    venta: { type: 'number', description: 'Lo que PAGAS por comprar 1 USD', example: 11.97 },
+    compra: { type: 'number', description: 'Lo que RECIBES al vender 1 USD', example: 11.92 },
+  },
+};
+
+module.exports = {
+  '/historico': {
+    get: {
+      tags: ['Histórico'],
+      summary: 'Evolución diaria del dólar oficial y/o paralelo',
+      description: 'Devuelve el **último valor de cada día** (hora de Bolivia) de los últimos `dias` días, contando hoy. Los días sin datos no aparecen. Los datos los acumula el recolector (`npm run recolector`) y también cada consulta de las demás rutas.',
+      parameters: [
+        { name: 'serie', in: 'query', required: false, schema: { type: 'string', enum: SELECCIONES, default: 'ambos' }, description: 'Qué dólar devolver' },
+        { name: 'dias', in: 'query', required: false, schema: { type: 'integer', enum: DIAS_PERMITIDOS, default: 30 }, description: 'Cuántos días hacia atrás: 7, 30 (1 mes), 90 (3 meses) o 180 (6 meses)' },
+      ],
+      responses: {
+        200: json('Serie diaria', {
+          type: 'object',
+          properties: {
+            base: { type: 'string', example: 'USD' },
+            cotizada: { type: 'string', example: 'BOB' },
+            serie: { type: 'string', enum: SELECCIONES },
+            dias: { type: 'integer', example: 30 },
+            desde: { type: 'string', example: '2026-10-02' },
+            hasta: { type: 'string', example: '2026-10-31' },
+            series: { type: 'object', properties: { oficial: { type: 'array', items: punto }, paralelo: { type: 'array', items: punto } } },
+            nota: { type: 'string' },
+          },
+        }, {
+          base: 'USD', cotizada: 'BOB', serie: 'ambos', dias: 30, desde: '2026-10-02', hasta: '2026-10-31',
+          series: {
+            oficial: [{ fecha: '2026-10-29', venta: 12.09, compra: 12.09 }, { fecha: '2026-10-30', venta: 12.09, compra: 12.09 }],
+            paralelo: [{ fecha: '2026-10-29', venta: 11.95, compra: 11.9 }, { fecha: '2026-10-30', venta: 11.97, compra: 11.92 }],
+          },
+          nota: 'Último valor de cada día (hora de Bolivia). Los días sin datos no aparecen.',
+        }),
+        400: json('Parámetro inválido', errorRef),
+      },
+    },
+  },
+};

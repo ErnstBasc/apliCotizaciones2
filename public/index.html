@@ -42,6 +42,29 @@
       </section>
     </div>
 
+    <section class="bloque" aria-labelledby="t-historico">
+      <h2 id="t-historico">Evolución del dólar</h2>
+      <div class="panel panel-grafico">
+        <div class="controles-grafico">
+          <fieldset class="segmentado" id="selector-serie">
+            <legend class="solo-lectores">Qué dólar mostrar</legend>
+            <label><input type="radio" name="serie" value="oficial"><span>Oficial</span></label>
+            <label><input type="radio" name="serie" value="paralelo"><span>Paralelo</span></label>
+            <label><input type="radio" name="serie" value="ambos" checked><span>Ambos</span></label>
+          </fieldset>
+          <fieldset class="segmentado" id="selector-rango">
+            <legend class="solo-lectores">Período</legend>
+            <label><input type="radio" name="rango" value="7"><span>7 días</span></label>
+            <label><input type="radio" name="rango" value="30" checked><span>1 mes</span></label>
+            <label><input type="radio" name="rango" value="90"><span>3 meses</span></label>
+            <label><input type="radio" name="rango" value="180"><span>6 meses</span></label>
+          </fieldset>
+        </div>
+        <div class="lienzo"><canvas id="grafico-historico" role="img" aria-label="Gráfico de la evolución diaria del dólar. Cargando."></canvas></div>
+        <p id="resumen-historico" class="nota" role="status">Cargando…</p>
+      </div>
+    </section>
+
     <div class="bloque rejilla-herramientas">
       <section aria-labelledby="t-conversor">
         <h2 id="t-conversor">Convertir</h2>
@@ -94,6 +117,8 @@
     <p>Proyecto universitario de Tecnologías Web II. Es informativo y no constituye asesoría financiera.</p>
   </footer>
 
+  <!-- Chart.js 4.4.7 (versión fija) para el gráfico de evolución. Si no carga, la página funciona igual y el gráfico muestra un aviso. -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.js" defer></script>
   <script type="module" src="/js/principal.js"></script>
 </body>
 </html>

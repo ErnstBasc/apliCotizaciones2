@@ -18,6 +18,7 @@ const especificacion = {
     { name: 'Estado', description: 'Verificación del servicio' },
     { name: 'Fuentes', description: 'Cada fuente por separado, con su caché' },
     { name: 'Entidades', description: 'Dólar en billeteras y bancos' },
+    { name: 'Histórico', description: 'Evolución diaria del dólar oficial y paralelo' },
     { name: 'Cálculos', description: 'Resumen, conversión y comparación calculados a partir de las fuentes' },
   ],
   paths: {
@@ -25,6 +26,7 @@ const especificacion = {
     ...require('./rutas/fuentes'),
     ...require('./rutas/entidades'),
     ...require('./rutas/calculos'),
+    ...require('./rutas/historico'),
   },
   components: { schemas: esquemas },
 };

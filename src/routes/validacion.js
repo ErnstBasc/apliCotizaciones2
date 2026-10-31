@@ -1,6 +1,7 @@
 // Validación de parámetros de entrada por LISTA BLANCA: solo se acepta lo que se espera, nada más.
 const { ErrorValidacion } = require('../errores');
 const { MONEDAS_SOPORTADAS, TASAS_BOB, LADOS } = require('../dominio/monedas');
+const { SELECCIONES, DIAS_PERMITIDOS } = require('../dominio/historico');
 
 // Un parámetro repetido (?monto=1&monto=2) llega como arreglo: se rechaza.
 function texto(query, nombre, porDefecto) {
@@ -29,4 +30,13 @@ function validarConversion(query) {
   return { monto: Number(monto), de, a, tasa, lado };
 }
 
-module.exports = { validarConversion };
+function validarHistorico(query) {
+  const serie = texto(query, 'serie', 'ambos');
+  if (!SELECCIONES.includes(serie)) throw new ErrorValidacion(`El parámetro "serie" debe ser: ${SELECCIONES.join(', ')}`);
+  const bruto = texto(query, 'dias', '30');
+  const dias = /^\d{1,3}$/.test(bruto) ? Number(bruto) : NaN; // solo dígitos: nada de "30abc", "1e2" ni "-7"
+  if (!DIAS_PERMITIDOS.includes(dias)) throw new ErrorValidacion(`El parámetro "dias" debe ser: ${DIAS_PERMITIDOS.join(', ')}`);
+  return { serie, dias };
+}
+
+module.exports = { validarConversion, validarHistorico };

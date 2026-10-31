@@ -8,6 +8,7 @@ import { pintarSitios } from './vistas/sitios.js';
 import { pintarMonedas } from './vistas/monedas.js';
 import { pintarIndicadores } from './vistas/indicadores.js';
 import { iniciarConversor } from './vistas/conversor.js';
+import { iniciarHistorico } from './vistas/historico.js';
 
 const REFRESCO_MS = 5 * 60_000;
 const $ = (id) => document.getElementById(id);
@@ -44,13 +45,14 @@ async function ejecutar(carga) {
 async function actualizarTodo() {
   const boton = $('btn-actualizar');
   boton.disabled = true;
-  const resultados = await Promise.all(cargas.map(ejecutar));
+  const resultados = await Promise.all([...cargas.map(ejecutar), recargarHistorico()]);
   primeraVez = false;
   boton.disabled = false;
   const todoBien = resultados.every(Boolean);
   $('actualizado').textContent = `${todoBien ? 'Actualizado' : 'Actualizado parcialmente'} a las ${hora(new Date())}`;
 }
 
+const recargarHistorico = iniciarHistorico();
 const convertir = iniciarConversor();
 $('btn-actualizar').addEventListener('click', () => { actualizarTodo(); convertir(); });
 actualizarTodo().then(convertir);

@@ -8,6 +8,7 @@ export const numero = (n) => (Math.abs(n) >= 100 ? fmt(0, 2) : fmt(0, 5)).format
 export const porcentaje = (n, conSigno = false) => `${conSigno && n > 0 ? '+' : ''}${dos.format(n)} %`;
 export const hora = (fecha) => fecha.toLocaleTimeString(L, { hour: '2-digit', minute: '2-digit' });
 export const mesDe = (iso) => (iso ? new Date(`${iso}T12:00:00`).toLocaleDateString(L, { month: 'long', year: 'numeric' }) : null);
+export const fechaLarga = (iso) => (iso ? new Date(`${iso}T12:00:00`).toLocaleDateString(L, { day: 'numeric', month: 'long', year: 'numeric' }) : null);
 export const fechaCorta = (iso) => (iso ? new Date(`${iso}T12:00:00`).toLocaleDateString(L, { day: 'numeric', month: 'short' }) : null);
 
 // Monedas de poco valor (ARS, PYG, CLP) se muestran por 10, 100 o 1.000 unidades para que el número sea legible.

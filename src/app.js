@@ -10,9 +10,10 @@ const { crearRutaHealth } = require('./routes/health');
 const { crearRutasFuentes } = require('./routes/fuentes');
 const { crearRutasEntidades } = require('./routes/entidades');
 const { crearRutasCalculos } = require('./routes/calculos');
+const { crearRutasHistorico } = require('./routes/historico');
 const { noEncontrado, manejarErrores } = require('./middleware/errores');
 
-function crearApp({ repositorio, cotizaciones, calculos, corsOrigenes = [], logger = console }) {
+function crearApp({ repositorio, cotizaciones, calculos, historico, corsOrigenes = [], logger = console }) {
   const app = express();
   app.disable('x-powered-by'); // no anunciar la tecnología del servidor
   app.use(crearCors(corsOrigenes)); // lista blanca de orígenes (vacía = solo mismo origen)
@@ -29,6 +30,7 @@ function crearApp({ repositorio, cotizaciones, calculos, corsOrigenes = [], logg
   app.use('/', crearRutasFuentes(express, cotizaciones));
   app.use('/', crearRutasEntidades(express, cotizaciones));
   app.use('/', crearRutasCalculos(express, calculos));
+  app.use('/', crearRutasHistorico(express, historico));
   // Los pasos siguientes agregan aquí más rutas (indicadores, bancos, conversor, docs…).
 
   app.use(noEncontrado);

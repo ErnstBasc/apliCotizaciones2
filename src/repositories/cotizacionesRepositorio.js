@@ -26,6 +26,21 @@ const SQL_ULTIMAS = `
    WHERE i.codigo = ANY($1)
    ORDER BY c.instrumento_id, c.entidad_id, c.obtenido_en DESC`;
 
+// Último valor vigente de cada día (hora de Bolivia, UTC-4 todo el año) de un instrumento y una entidad, desde una fecha.
+// Se resta el desfase a mano (sin depender de la base de zonas horarias de PostgreSQL).
+const SQL_ULTIMO_POR_DIA = `
+  SELECT DISTINCT ON (dia) dia, valor, compra, venta
+    FROM (
+      SELECT to_char(((c.obtenido_en AT TIME ZONE 'UTC') - INTERVAL '4 hours')::date, 'YYYY-MM-DD') AS dia,
+             c.obtenido_en, c.valor, c.compra, c.venta
+        FROM cotizaciones c
+        JOIN instrumentos i ON i.id = c.instrumento_id
+        JOIN entidades    e ON e.id = c.entidad_id
+       WHERE i.codigo = $1 AND e.codigo = $2 AND c.estado = 'vigente'
+         AND ((c.obtenido_en AT TIME ZONE 'UTC') - INTERVAL '4 hours')::date >= $3::date
+    ) lecturas
+   ORDER BY dia, obtenido_en DESC`;
+
 // pg devuelve NUMERIC como texto para no perder precisión; nuestros cálculos usan Number.
 const aNumero = (x) => (x === null || x === undefined ? null : Number(x));
 
@@ -64,6 +79,12 @@ function crearRepositorioCotizaciones(db) {
     async ultimas(codigosInstrumento) {
       const r = await db.query(SQL_ULTIMAS, [codigosInstrumento]);
       return r.rows.map(filaAObservacion);
+    },
+
+    // Serie diaria para el gráfico: [{ fecha: 'AAAA-MM-DD', venta, compra, valor }], de la más antigua a la más reciente.
+    async ultimoPorDia({ instrumento, entidad, desde }) {
+      const r = await db.query(SQL_ULTIMO_POR_DIA, [instrumento, entidad, desde]);
+      return r.rows.map((f) => ({ fecha: f.dia, venta: aNumero(f.venta), compra: aNumero(f.compra), valor: aNumero(f.valor) }));
     },
 
     // Para /health: cuántos instrumentos hay (también prueba que la base responde).

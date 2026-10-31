@@ -2,7 +2,7 @@
 
 Segundo prototipo (más avanzado) de apliCotizaciones. Proyecto de *Tecnologías Web II*.
 
-**Estado (rama `prototipo3`):** Etapa 2. Recolector programado que llena el histórico por su cuenta. Etapa 1 hecha: Airtm, Takenos, El Dorado y Bitget P2P. El prototipo 2 completo está en la etiqueta `v2.0`.
+**Estado (rama `prototipo3`):** Etapa 3. Ruta `/historico` y gráfico de evolución diaria (oficial, paralelo o ambos; 7 días a 6 meses). Etapa 2: recolector programado que llena el histórico por su cuenta. Etapa 1 hecha: Airtm, Takenos, El Dorado y Bitget P2P. El prototipo 2 completo está en la etiqueta `v2.0`.
 
 ## Estructura
 

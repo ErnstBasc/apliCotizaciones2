@@ -8,6 +8,7 @@ const { crearApp } = require('./app');
 const { crearServicioCache } = require('./services/cacheService');
 const { crearServicioCotizaciones } = require('./services/cotizacionesService');
 const { crearServicioCalculos } = require('./services/calculosService');
+const { crearServicioHistorico } = require('./services/historicoService');
 const { crearAdaptadores } = require('./composicion');
 
 const config = cargarConfig();
@@ -20,8 +21,9 @@ const cache = crearServicioCache({ repositorio });
 const cotizaciones = crearServicioCotizaciones({ cache, adaptadores, cacheMin: config.cacheMin });
 
 const calculos = crearServicioCalculos({ cotizaciones });
+const historico = crearServicioHistorico({ repositorio });
 
-const app = crearApp({ repositorio, cotizaciones, calculos, corsOrigenes: config.corsOrigenes });
+const app = crearApp({ repositorio, cotizaciones, calculos, historico, corsOrigenes: config.corsOrigenes });
 
 const servidor = app.listen(config.puerto, () => {
   console.log(`apliCotizaciones2 escuchando en http://localhost:${config.puerto}  (entorno: ${config.entorno})`);
