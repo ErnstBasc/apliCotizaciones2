@@ -160,6 +160,29 @@ button, input, select { font: inherit; color: inherit; }
 .cifra-lista { font: 600 1.85rem/1 var(--fuente-cifras); font-variant-numeric: tabular-nums; }
 .dif, .por { font-size: 0.82rem; color: var(--tinta-suave); line-height: 1.3; }
 
+/* ---------- Tarjetas de bancos y de billeteras y sitios ---------- */
+.rejilla-tarjetas { display: grid; grid-template-columns: 1fr; gap: 2.5rem 2.5rem; align-items: start; }
+@media (min-width: 56rem) { .rejilla-tarjetas { grid-template-columns: 1.2fr 1fr; } }
+.rejilla-tarjetas > * { min-width: 0; }
+.rejilla-tarjetas .ayuda-columna { margin: -0.6rem 0 0.9rem; }
+.panel-tabla { padding: 0.4rem clamp(0.75rem, 2vw, 1.25rem) 0.6rem; }
+.tabla-precios { width: 100%; border-collapse: collapse; min-width: 19rem; }
+.tabla-precios th, .tabla-precios td { padding: 0.65rem 0.5rem; border-bottom: 1px solid var(--linea); vertical-align: middle; text-align: left; }
+.tabla-precios tbody tr:last-child > * { border-bottom: 0; }
+.tabla-precios thead th { font-weight: 500; font-size: 0.92rem; color: var(--tinta-suave); border-bottom-color: var(--tinta-suave); }
+.tabla-precios tbody th { font-weight: 500; }
+.tabla-precios .num { text-align: right; }
+.tabla-precios td.num > * { display: block; }
+.nombre-entidad { display: block; }
+.detalle-entidad { display: flex; flex-wrap: wrap; align-items: center; gap: 0.15rem 0.6rem; margin-top: 0.15rem; }
+.cifra-menor { font-size: 1.35rem; font-weight: 500; color: var(--tinta-suave); }
+/* "Subrayado" verde para el mejor precio: línea bajo la celda + sello con texto (no depende solo del color) */
+.mejor-celda { background: color-mix(in srgb, var(--verde) 13%, transparent); box-shadow: inset 0 -3px 0 var(--verde); }
+.mejor-celda .cifra-lista { color: var(--tinta); }
+.mejor-celda .sello { display: inline-block; margin-top: 0.2rem; font-size: 0.74rem; line-height: 1.5; white-space: nowrap; }
+.apagada { color: var(--tinta-suave); }
+.apagada .nombre-entidad { text-decoration: line-through; text-decoration-color: var(--linea); }
+
 /* ---------- Herramientas: conversor e indicadores ---------- */
 .rejilla-herramientas { display: grid; grid-template-columns: 1fr; gap: 2.5rem 3.5rem; }
 @media (min-width: 56rem) { .rejilla-herramientas { grid-template-columns: 1.25fr 1fr; } }

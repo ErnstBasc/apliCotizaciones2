@@ -25,14 +25,22 @@
   <main class="contenedor">
     <section class="tablero" aria-labelledby="t-tablero">
       <h1 id="t-tablero">El dólar hoy en Bolivia</h1>
-      <p class="tablero-ayuda">Bolivianos por 1 dólar. <strong>Venta</strong> es lo que pagas al comprarlo; <strong>compra</strong>, lo que recibes al vender el tuyo.</p>
+      <p class="tablero-ayuda">Bolivianos por dólar</p>
       <div id="tablero-datos"><p class="cargando">Cargando…</p></div>
     </section>
 
-    <section class="bloque" aria-labelledby="t-comparacion">
-      <h2 id="t-comparacion">Dónde conviene</h2>
-      <div id="comparacion-datos"><p class="cargando">Cargando…</p></div>
-    </section>
+    <div class="bloque rejilla-tarjetas">
+      <section aria-labelledby="t-bancos">
+        <h2 id="t-bancos">Bancos</h2>
+        <p class="ayuda-columna">Venta es lo que pagas al comprar un dólar; compra, lo que recibes al vender el tuyo.</p>
+        <div id="bancos-datos"><p class="cargando">Cargando…</p></div>
+      </section>
+      <section aria-labelledby="t-sitios">
+        <h2 id="t-sitios">Billeteras y sitios</h2>
+        <p class="ayuda-columna">Billeteras digitales (Wallbit, Airtm, Takenos) y mercados P2P (Binance, Bitget, El Dorado).</p>
+        <div id="sitios-datos"><p class="cargando">Cargando…</p></div>
+      </section>
+    </div>
 
     <div class="bloque rejilla-herramientas">
       <section aria-labelledby="t-conversor">
@@ -82,7 +90,7 @@
   </main>
 
   <footer class="pie contenedor">
-    <p>Fuentes: Banco Central de Bolivia, Binance P2P (con respaldo de dolarbluebolivia.click), Frankfurter y las pizarras que publica cada banco. Los precios de bancos y billeteras pueden diferir de lo que cobran en ventanilla o en su app.</p>
+    <p>Fuentes: Banco Central de Bolivia, Binance P2P (con respaldo de dolarbluebolivia.click), Frankfurter, dolarbluebolivia.click (billeteras, plataformas y bancos) y las pizarras que publica cada banco. Los precios de bancos y billeteras pueden diferir de lo que cobran en ventanilla o en su app.</p>
     <p>Proyecto universitario de Tecnologías Web II. Es informativo y no constituye asesoría financiera.</p>
   </footer>
 

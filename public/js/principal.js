@@ -3,7 +3,8 @@ import { obtener } from './api.js';
 import { bloqueError, reemplazar } from './dom.js';
 import { hora } from './formato.js';
 import { pintarPizarra } from './vistas/pizarra.js';
-import { pintarComparacion } from './vistas/comparacion.js';
+import { pintarBancos } from './vistas/bancos.js';
+import { pintarSitios } from './vistas/sitios.js';
 import { pintarMonedas } from './vistas/monedas.js';
 import { pintarIndicadores } from './vistas/indicadores.js';
 import { iniciarConversor } from './vistas/conversor.js';
@@ -18,13 +19,19 @@ const cargas = [
     pintarPizarra($('tablero-datos'), d, { primeraVez });
     pintarMonedas($('monedas-datos'), d);
   }, contenedores: ['tablero-datos', 'monedas-datos'] },
-  { ruta: '/comparacion', pintar: (d) => pintarComparacion($('comparacion-datos'), d), contenedores: ['comparacion-datos'] },
+  { ruta: '/bancos', pintar: (d) => pintarBancos($('bancos-datos'), d), contenedores: ['bancos-datos'] },
+  // Billeteras y sitios juntan dos rutas; si una falla se muestra la otra, y solo si fallan ambas aparece el error
+  { obtener: async () => {
+    const [billeteras, paralelo] = await Promise.allSettled([obtener('/billeteras'), obtener('/paralelo')]);
+    if (billeteras.status === 'rejected' && paralelo.status === 'rejected') throw billeteras.reason;
+    return { billeteras: billeteras.value ?? null, paralelo: paralelo.value ?? null };
+  }, pintar: (d) => pintarSitios($('sitios-datos'), d), contenedores: ['sitios-datos'] },
   { ruta: '/indicadores', pintar: (d) => pintarIndicadores($('indicadores-datos'), d), contenedores: ['indicadores-datos'] },
 ];
 
 async function ejecutar(carga) {
   try {
-    carga.pintar(await obtener(carga.ruta));
+    carga.pintar(await (carga.obtener ? carga.obtener() : obtener(carga.ruta)));
     return true;
   } catch (error) {
     for (const id of carga.contenedores) {
