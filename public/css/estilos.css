@@ -310,3 +310,10 @@ button, input, select { font: inherit; color: inherit; }
 .boton-peligro { background: var(--rojo); color: #fff; padding: 0.75rem 1.5rem; font-weight: 600; width: 100%; }
 .boton-peligro-suave { background: transparent; color: var(--rojo); box-shadow: inset 0 0 0 1.5px var(--rojo); }
 .aviso-peligro { color: var(--rojo); font-weight: 500; }
+
+/* ---------- Descarga CSV ---------- */
+.descarga { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--linea); }
+.descarga-formato { display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; }
+.descarga-formato select { height: 2.4rem; padding-inline: 0.5rem; background: var(--superficie); border: 1.5px solid var(--linea); border-radius: 6px; }
+.descarga .nota { margin: 0; flex-basis: 100%; }
+.descarga .nota:empty { display: none; }

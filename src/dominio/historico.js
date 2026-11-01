@@ -7,4 +7,6 @@ const SERIES = {
 const SELECCIONES = ['oficial', 'paralelo', 'ambos'];
 const DIAS_PERMITIDOS = [7, 30, 90, 180]; // 7 días, 1 mes, 3 meses, 6 meses
 
-module.exports = { SERIES, SELECCIONES, DIAS_PERMITIDOS };
+const FORMATOS_CSV = ['excel', 'estandar'];
+
+module.exports = { SERIES, SELECCIONES, DIAS_PERMITIDOS, FORMATOS_CSV };

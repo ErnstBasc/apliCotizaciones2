@@ -2,7 +2,7 @@
 
 Segundo prototipo (más avanzado) de apliCotizaciones. Proyecto de *Tecnologías Web II*.
 
-**Estado (rama `prototipo3`):** Etapa 4: cuentas de usuario (registro, sesión, verificación de correo, recuperar/cambiar contraseña, eliminar cuenta). Etapa 3. Ruta `/historico` y gráfico de evolución diaria (oficial, paralelo o ambos; 7 días a 6 meses). Etapa 2: recolector programado que llena el histórico por su cuenta. Etapa 1 hecha: Airtm, Takenos, El Dorado y Bitget P2P. El prototipo 2 completo está en la etiqueta `v2.0`.
+**Estado (rama `prototipo3`):** Etapa 5: descarga CSV del histórico para usuarios con correo confirmado. Etapa 4: cuentas de usuario (registro, sesión, verificación de correo, recuperar/cambiar contraseña, eliminar cuenta). Etapa 3. Ruta `/historico` y gráfico de evolución diaria (oficial, paralelo o ambos; 7 días a 6 meses). Etapa 2: recolector programado que llena el histórico por su cuenta. Etapa 1 hecha: Airtm, Takenos, El Dorado y Bitget P2P. El prototipo 2 completo está en la etiqueta `v2.0`.
 
 ## Estructura
 
@@ -45,6 +45,10 @@ npm run recolector   # proceso aparte: consulta las fuentes cada cierto tiempo (
 - **Contra abuso:** mensajes idénticos exista o no la cuenta, bloqueo de 15 min tras 5 intentos fallidos, comprobación de origen en peticiones que modifican datos. El límite de peticiones por IP llegará en la Etapa 8.
 - **Rutas:** `/usuarios/registro`, `verificar`, `reenviar-verificacion`, `ingresar`, `salir`, `yo` (GET y DELETE), `cambiar-clave`, `recuperar`, `restablecer`. Detalle en `/docs`.
 - **Roles:** cada usuario es `registrado`; el valor `premium` existe en la base pero aún no activa nada.
+
+## Descarga CSV
+
+`GET /historico.csv?serie=oficial|paralelo|ambos&dias=7|30|90|180&formato=excel|estandar` entrega los mismos datos del gráfico, una fila por día (`fecha`, `oficial_bs_por_usd`, `paralelo_venta_bs_por_usd`, `paralelo_compra_bs_por_usd`). Exige sesión iniciada y correo confirmado (401 / 403 si no). El formato `excel` (por defecto) usa `;`, decimales con coma y BOM UTF-8 para abrirlo con doble clic en Excel en español; `estandar` usa `,` y punto decimal. Si no hay cuentas configuradas, la ruta no se monta. En la página, el botón "Descargar CSV" está bajo el gráfico y respeta la serie y el período elegidos.
 
 ## Documentación y seguridad
 

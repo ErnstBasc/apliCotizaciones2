@@ -65,6 +65,16 @@
         </div>
         <div class="lienzo"><canvas id="grafico-historico" role="img" aria-label="Gráfico de la evolución diaria del dólar. Cargando."></canvas></div>
         <p id="resumen-historico" class="nota" role="status">Cargando…</p>
+        <div class="descarga">
+          <button type="button" id="btn-csv" class="boton boton-suave">Descargar CSV</button>
+          <label class="descarga-formato">Formato
+            <select id="formato-csv">
+              <option value="excel">Excel en español (;)</option>
+              <option value="estandar">Estándar (,)</option>
+            </select>
+          </label>
+          <p id="estado-csv" class="nota" role="status"></p>
+        </div>
       </div>
     </section>
 

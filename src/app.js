@@ -32,7 +32,9 @@ function crearApp({ repositorio, cotizaciones, calculos, historico, cuentas, cor
   app.use('/', crearRutasFuentes(express, cotizaciones));
   app.use('/', crearRutasEntidades(express, cotizaciones));
   app.use('/', crearRutasCalculos(express, calculos));
-  app.use('/', crearRutasHistorico(express, historico));
+  // La descarga CSV exige sesión y correo confirmado; sin cuentas configuradas, esa ruta no existe
+  const guardiasCsv = cuentas && [cuentas.autenticacion.exigirSesion, cuentas.autenticacion.exigirVerificado];
+  app.use('/', crearRutasHistorico(express, historico, guardiasCsv));
   if (cuentas) app.use('/usuarios', crearRutasUsuarios(express, cuentas));
   // Los pasos siguientes agregan aquí más rutas (indicadores, bancos, conversor, docs…).
 

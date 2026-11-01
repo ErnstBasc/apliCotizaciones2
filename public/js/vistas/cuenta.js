@@ -215,8 +215,12 @@ async function atenderEnlaceDeCorreo() {
   }
 }
 
+// Para otras partes de la página (la descarga CSV, luego las alertas)
+export const usuarioActual = () => usuario;
+export const abrirCuenta = () => (usuario ? vistaCuenta() : vistaIngreso());
+
 export async function iniciarCuenta() {
-  $('btn-cuenta').addEventListener('click', () => (usuario ? vistaCuenta() : vistaIngreso()));
+  $('btn-cuenta').addEventListener('click', abrirCuenta);
   $('dialogo-cerrar').addEventListener('click', cerrar);
   // Clic en el fondo oscuro (fuera de la caja) cierra
   $('dialogo-cuenta').addEventListener('click', (e) => { if (e.target === e.currentTarget) cerrar(); });

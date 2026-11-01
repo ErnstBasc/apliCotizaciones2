@@ -1,7 +1,7 @@
 // Validación de parámetros de entrada por LISTA BLANCA: solo se acepta lo que se espera, nada más.
 const { ErrorValidacion } = require('../errores');
 const { MONEDAS_SOPORTADAS, TASAS_BOB, LADOS } = require('../dominio/monedas');
-const { SELECCIONES, DIAS_PERMITIDOS } = require('../dominio/historico');
+const { SELECCIONES, DIAS_PERMITIDOS, FORMATOS_CSV } = require('../dominio/historico');
 
 // Un parámetro repetido (?monto=1&monto=2) llega como arreglo: se rechaza.
 function texto(query, nombre, porDefecto) {
@@ -37,6 +37,12 @@ function validarHistorico(query) {
   const dias = /^\d{1,3}$/.test(bruto) ? Number(bruto) : NaN; // solo dígitos: nada de "30abc", "1e2" ni "-7"
   if (!DIAS_PERMITIDOS.includes(dias)) throw new ErrorValidacion(`El parámetro "dias" debe ser: ${DIAS_PERMITIDOS.join(', ')}`);
   return { serie, dias };
+}
+
+function validarExportacion(query) {
+  const formato = texto(query, 'formato', 'excel');
+  if (!FORMATOS_CSV.includes(formato)) throw new ErrorValidacion(`El parámetro "formato" debe ser: ${FORMATOS_CSV.join(' o ')}`);
+  return { ...validarHistorico(query), formato };
 }
 
 // ---- Cuentas de usuario (cuerpo JSON) ----
@@ -82,6 +88,6 @@ const validarCambioClave = (b) => ({ claveActual: claveExistente(b, 'claveActual
 const validarEliminacion = (b) => ({ clave: claveExistente(b) });
 
 module.exports = {
-  validarConversion, validarHistorico, validarRegistro, validarIngreso, validarCorreo, validarToken,
+  validarConversion, validarHistorico, validarExportacion, validarRegistro, validarIngreso, validarCorreo, validarToken,
   validarRestablecer, validarCambioClave, validarEliminacion, CLAVE_MIN, CLAVE_MAX,
 };
