@@ -16,4 +16,15 @@ const correoRecuperacion = ({ enlace, minutos }) => ({
   texto: `Para elegir una contraseña nueva, abre este enlace (vale ${minutos} minutos y sirve una sola vez):\n\n${enlace}\n${pie}`,
 });
 
-module.exports = { correoVerificacion, correoCuentaExistente, correoRecuperacion };
+const coma = (n) => Number(n).toFixed(2).replace('.', ',');
+
+const correoAlerta = ({ descripcion, actual, cierre, cambioPct, urlPublica, horas }) => ({
+  asunto: `Alerta de apliCotizaciones: ${descripcion}`,
+  texto: `Se cumplió tu alerta: ${descripcion}.\n\n` +
+    `Valor actual: ${coma(actual)} Bs por dólar.\n` +
+    (cambioPct !== undefined ? `Cambio respecto al cierre anterior (${coma(cierre)} Bs): ${cambioPct > 0 ? '+' : ''}${coma(cambioPct)} %.\n` : '') +
+    `\nNo volverás a recibir aviso de esta alerta durante ${horas} horas, aunque siga cumpliéndose.\n` +
+    `Para pausarla, cambiarla o eliminarla, ingresa en ${urlPublica} y busca "Mis alertas".\n\n— apliCotizaciones`,
+});
+
+module.exports = { correoAlerta, correoVerificacion, correoCuentaExistente, correoRecuperacion };

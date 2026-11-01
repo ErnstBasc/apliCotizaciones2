@@ -21,6 +21,7 @@ const especificacion = {
     { name: 'Entidades', description: 'Dólar en billeteras y bancos' },
     { name: 'Histórico', description: 'Evolución diaria del dólar oficial y paralelo' },
     { name: 'Usuarios', description: 'Cuentas: registro, sesión (cookie httpOnly), verificación de correo, recuperación y baja' },
+    { name: 'Alertas', description: 'Avisos por correo cuando el dólar oficial o paralelo cumple una condición (requiere sesión y correo confirmado)' },
     { name: 'Cálculos', description: 'Resumen, conversión y comparación calculados a partir de las fuentes' },
   ],
   paths: {
@@ -30,6 +31,7 @@ const especificacion = {
     ...require('./rutas/calculos'),
     ...require('./rutas/historico'),
     ...require('./rutas/usuarios'),
+    ...require('./rutas/alertas'),
   },
   components: {
     schemas: esquemas,

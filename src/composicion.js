@@ -14,6 +14,15 @@ const { crearAdaptadoresPlataformas } = require('./adapters/dolarbluebolivia/pla
 const { crearAdaptadorBancos } = require('./adapters/dolarbluebolivia/bancos');
 const { conRespaldo } = require('./adapters/conRespaldo');
 const { combinar } = require('./adapters/combinar');
+const { crearMailerConsola } = require('./mailer/consola');
+const { crearMailerSmtp, crearTransporteNodemailer } = require('./mailer/smtp');
+
+// Mailer según MAIL_MODO: "consola" (imprime) o "smtp" (envía de verdad). Lo comparten el servidor y el notificador.
+function crearMailer(config, { crearTransporte = crearTransporteNodemailer } = {}) {
+  const { modo, remitente, smtp } = config.correo;
+  if (modo === 'consola') return crearMailerConsola();
+  return crearMailerSmtp({ transporte: crearTransporte(smtp), remitente });
+}
 
 function crearAdaptadores() {
   const obtenerPortadaBcb = crearDescargadorPortada();
@@ -36,4 +45,4 @@ function crearAdaptadores() {
   };
 }
 
-module.exports = { crearAdaptadores };
+module.exports = { crearAdaptadores, crearMailer };

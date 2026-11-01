@@ -317,3 +317,16 @@ button, input, select { font: inherit; color: inherit; }
 .descarga-formato select { height: 2.4rem; padding-inline: 0.5rem; background: var(--superficie); border: 1.5px solid var(--linea); border-radius: 6px; }
 .descarga .nota { margin: 0; flex-basis: 100%; }
 .descarga .nota:empty { display: none; }
+
+/* ---------- Mis alertas ---------- */
+.formulario-alerta { grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); align-items: end; margin-top: 0.4rem; }
+.formulario-alerta .campo input, .formulario-alerta .campo select { font-family: var(--fuente-texto); font-size: 1rem; font-weight: 400; }
+.formulario-alerta .error-campo, .formulario-alerta button { grid-column: 1 / -1; }
+.formulario-alerta .boton-principal { width: auto; justify-self: start; }
+.lista-alertas { list-style: none; margin: 0 0 1.1rem; padding: 0; display: grid; gap: 0.6rem; }
+.alerta-fila { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem 1rem; padding: 0.8rem 1rem; border: 1px solid var(--linea); border-radius: 8px; }
+.alerta-pausada { opacity: 0.7; }
+.alerta-texto { display: grid; gap: 0.15rem; min-width: 0; }
+.alerta-meta { font-size: 0.88rem; color: var(--tinta-suave); }
+.alerta-acciones { display: flex; gap: 0.5rem; }
+[hidden] { display: none !important; }

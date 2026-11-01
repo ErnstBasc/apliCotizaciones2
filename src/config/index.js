@@ -26,6 +26,26 @@ function secretoDesdeEnv(env, entorno) {
   return s;
 }
 
+function enteroDesdeEnv(env, nombre, porDefecto) {
+  const n = Number(env[nombre]);
+  return env[nombre] !== undefined && env[nombre] !== '' && Number.isInteger(n) && n >= 1 ? n : porDefecto;
+}
+
+// Correo: "consola" (por defecto) o "smtp". Con smtp faltan datos = error claro al arrancar, no al primer envío.
+function correoDesdeEnv(env) {
+  const modo = env.MAIL_MODO || 'consola';
+  if (!['consola', 'smtp'].includes(modo)) throw new Error(`MAIL_MODO debe ser "consola" o "smtp" (recibido: "${modo}")`);
+  const smtp = {
+    host: env.SMTP_HOST, port: Number(env.SMTP_PORT) || 465, seguro: env.SMTP_SEGURO !== 'false',
+    usuario: env.SMTP_USUARIO, clave: env.SMTP_CLAVE,
+  };
+  if (modo === 'smtp') {
+    const faltan = [['SMTP_HOST', smtp.host], ['SMTP_USUARIO', smtp.usuario], ['SMTP_CLAVE', smtp.clave]].filter(([, v]) => !v).map(([n]) => n);
+    if (faltan.length) throw new Error(`MAIL_MODO=smtp requiere: ${faltan.join(', ')}`);
+  }
+  return { modo, remitente: env.MAIL_FROM || (smtp.usuario ? `apliCotizaciones <${smtp.usuario}>` : 'apliCotizaciones <no-responder@localhost>'), smtp };
+}
+
 // Recibe el entorno como parámetro para poder probarlo sin tocar process.env real.
 function cargarConfig(env = process.env) {
   const entorno = env.NODE_ENV || 'development';
@@ -64,7 +84,12 @@ function cargarConfig(env = process.env) {
       cookieSegura: entorno === 'production', // en producción la cookie solo viaja por HTTPS
       urlPublica: (env.APP_URL || `http://localhost:${puerto}`).replace(/\/+$/, ''), // base de los enlaces de los correos
     },
-    correo: { modo: env.MAIL_MODO || 'consola' },
+    correo: correoDesdeEnv(env),
+    alertas: {
+      maxPorUsuario: enteroDesdeEnv(env, 'ALERTAS_MAX', 3),
+      enfriamientoHoras: minutosDesdeEnv(env, 'ALERTAS_ENFRIAMIENTO_H', 12),
+    },
+    notificadorMin: minutosDesdeEnv(env, 'NOTIFICADOR_MIN', 5), // cada cuántos minutos revisa las alertas
   };
 }
 

@@ -27,7 +27,7 @@ function crearTareas({ cotizaciones, cadaMin }) {
 }
 
 function crearRecolector({
-  tareas, logger = console, escalonadoMs = 3000, reloj = () => Date.now(),
+  tareas, logger = console, prefijo = 'recolector', escalonadoMs = 3000, reloj = () => Date.now(),
   setTimeoutFn = setTimeout, clearTimeoutFn = clearTimeout,
 }) {
   const estados = new Map(tareas.map((t) => [t.nombre, {
@@ -46,11 +46,11 @@ function crearRecolector({
         const resumen = await tarea.ejecutar();
         e.ultimaOk = new Date(reloj()).toISOString();
         e.ultimoError = null;
-        logger.log(`[recolector] ${tarea.nombre}: ok (${resumen})`);
+        logger.log(`[${prefijo}] ${tarea.nombre}: ok (${resumen})`);
       } catch (err) {
         e.fallos += 1;
         e.ultimoError = err.message;
-        logger.error(`[recolector] ${tarea.nombre}: falló (${err.message})`);
+        logger.error(`[${prefijo}] ${tarea.nombre}: falló (${err.message})`);
       }
     })();
     await e.ejecutando;
@@ -65,7 +65,7 @@ function crearRecolector({
       tareas.forEach((t, i) => {
         estados.get(t.nombre).temporizador = setTimeoutFn(() => correr(t), i * escalonadoMs);
       });
-      logger.log(`[recolector] iniciado con ${tareas.length} tarea(s): ${tareas.map((t) => `${t.nombre} cada ${t.cadaMin} min`).join(', ') || 'ninguna'}`);
+      logger.log(`[${prefijo}] iniciado con ${tareas.length} tarea(s): ${tareas.map((t) => `${t.nombre} cada ${t.cadaMin} min`).join(', ') || 'ninguna'}`);
     },
 
     // Cancela lo pendiente y espera a que termine lo que esté en curso (cierre ordenado)
@@ -76,7 +76,7 @@ function crearRecolector({
         e.temporizador = null;
       }
       await Promise.all([...estados.values()].map((e) => e.ejecutando));
-      logger.log('[recolector] detenido');
+      logger.log(`[${prefijo}] detenido`);
     },
 
     estado() {

@@ -12,9 +12,10 @@ const { crearRutasEntidades } = require('./routes/entidades');
 const { crearRutasCalculos } = require('./routes/calculos');
 const { crearRutasHistorico } = require('./routes/historico');
 const { crearRutasUsuarios } = require('./routes/usuarios');
+const { crearRutasAlertas } = require('./routes/alertas');
 const { noEncontrado, manejarErrores } = require('./middleware/errores');
 
-// `cuentas` agrupa lo de usuarios: { usuarios, sesiones, autenticacion, mismoOrigen } (opcional: sin él no hay rutas /usuarios)
+// `cuentas` agrupa lo de usuarios: { usuarios, sesiones, autenticacion, mismoOrigen, alertas } (opcional: sin él no hay rutas /usuarios)
 function crearApp({ repositorio, cotizaciones, calculos, historico, cuentas, corsOrigenes = [], logger = console }) {
   const app = express();
   app.disable('x-powered-by'); // no anunciar la tecnología del servidor
@@ -36,6 +37,7 @@ function crearApp({ repositorio, cotizaciones, calculos, historico, cuentas, cor
   const guardiasCsv = cuentas && [cuentas.autenticacion.exigirSesion, cuentas.autenticacion.exigirVerificado];
   app.use('/', crearRutasHistorico(express, historico, guardiasCsv));
   if (cuentas) app.use('/usuarios', crearRutasUsuarios(express, cuentas));
+  if (cuentas && cuentas.alertas) app.use('/alertas', crearRutasAlertas(express, cuentas));
   // Los pasos siguientes agregan aquí más rutas (indicadores, bancos, conversor, docs…).
 
   app.use(noEncontrado);

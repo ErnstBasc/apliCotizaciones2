@@ -2,7 +2,7 @@
 
 Segundo prototipo (más avanzado) de apliCotizaciones. Proyecto de *Tecnologías Web II*.
 
-**Estado (rama `prototipo3`):** Etapa 5: descarga CSV del histórico para usuarios con correo confirmado. Etapa 4: cuentas de usuario (registro, sesión, verificación de correo, recuperar/cambiar contraseña, eliminar cuenta). Etapa 3. Ruta `/historico` y gráfico de evolución diaria (oficial, paralelo o ambos; 7 días a 6 meses). Etapa 2: recolector programado que llena el histórico por su cuenta. Etapa 1 hecha: Airtm, Takenos, El Dorado y Bitget P2P. El prototipo 2 completo está en la etiqueta `v2.0`.
+**Estado (rama `prototipo3`):** Etapa 6: alertas de precio por correo con un proceso notificador aparte (`npm run notificador`) y envío SMTP real (Gmail). Etapa 5: descarga CSV del histórico para usuarios con correo confirmado. Etapa 4: cuentas de usuario (registro, sesión, verificación de correo, recuperar/cambiar contraseña, eliminar cuenta). Etapa 3. Ruta `/historico` y gráfico de evolución diaria (oficial, paralelo o ambos; 7 días a 6 meses). Etapa 2: recolector programado que llena el histórico por su cuenta. Etapa 1 hecha: Airtm, Takenos, El Dorado y Bitget P2P. El prototipo 2 completo está en la etiqueta `v2.0`.
 
 ## Estructura
 
@@ -25,10 +25,11 @@ Segundo prototipo (más avanzado) de apliCotizaciones. Proyecto de *Tecnologías
 ## Probar
 
 ```bash
-npm install express pg dotenv
+npm install
 npm test
 npm start   # luego abrir http://localhost:3000/health
 npm run recolector   # proceso aparte: consulta las fuentes cada cierto tiempo (Ctrl+C para detener)
+npm run notificador  # proceso aparte: revisa las alertas y envía los avisos por correo
 ```
 
 ## Recolector
@@ -45,6 +46,15 @@ npm run recolector   # proceso aparte: consulta las fuentes cada cierto tiempo (
 - **Contra abuso:** mensajes idénticos exista o no la cuenta, bloqueo de 15 min tras 5 intentos fallidos, comprobación de origen en peticiones que modifican datos. El límite de peticiones por IP llegará en la Etapa 8.
 - **Rutas:** `/usuarios/registro`, `verificar`, `reenviar-verificacion`, `ingresar`, `salir`, `yo` (GET y DELETE), `cambiar-clave`, `recuperar`, `restablecer`. Detalle en `/docs`.
 - **Roles:** cada usuario es `registrado`; el valor `premium` existe en la base pero aún no activa nada.
+
+## Alertas por correo
+
+- **Migración:** `db/migraciones/004_alertas.sql` (tabla `alertas`). **Dependencia nueva:** `nodemailer` (`npm install`).
+- **Tipos:** `sube_de` y `baja_de` (precio en Bs, inclusivo) y `cambio_pct` (el precio cambió, hacia arriba o abajo, al menos ese % respecto al cierre del día anterior). Sobre el dólar oficial o el paralelo (venta o compra). Máximo de alertas por usuario: `ALERTAS_MAX` (3). Una alerta que ya avisó espera `ALERTAS_ENFRIAMIENTO_H` horas (12) antes de volver a avisar, aunque la condición siga cumpliéndose.
+- **Quién:** solo usuarios con sesión y correo confirmado. Rutas `GET/POST /alertas`, `PATCH/DELETE /alertas/:id`. En la página: sección "Mis alertas".
+- **Cómo funciona (microservicios ligeros):** el recolector guarda los precios en PostgreSQL; el notificador (`npm run notificador`, revisa cada `NOTIFICADOR_MIN` minutos, 5 por defecto) lee esos precios y los compara con las alertas activas. No se hablan entre sí, solo comparten la base: si uno se cae, el otro sigue. Los tres procesos (servidor, recolector, notificador) pueden ejecutarse por separado.
+- **Sin duplicados ni pérdidas:** el aviso se "reclama" en la base antes de enviar el correo (solo un proceso puede hacerlo); si el envío falla, se devuelve la marca y se reintenta en la siguiente vuelta. Un dato desactualizado nunca dispara avisos.
+- **Correo real con Gmail:** activa la verificación en dos pasos, crea una "contraseña de aplicación" (Cuenta Google → Seguridad) y en `.env` pon `MAIL_MODO=smtp`, `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`, `SMTP_USUARIO`, `SMTP_CLAVE` (la contraseña de aplicación) y opcionalmente `MAIL_FROM`. Al arrancar, el notificador verifica la conexión y se detiene con un mensaje claro si falla. Con `MAIL_MODO=consola` los avisos se imprimen en la terminal del notificador.
 
 ## Descarga CSV
 

@@ -9,11 +9,12 @@ const { crearServicioCache } = require('./services/cacheService');
 const { crearServicioCotizaciones } = require('./services/cotizacionesService');
 const { crearServicioCalculos } = require('./services/calculosService');
 const { crearServicioHistorico } = require('./services/historicoService');
-const { crearAdaptadores } = require('./composicion');
+const { crearAdaptadores, crearMailer } = require('./composicion');
 const crypto = require('node:crypto');
 const { crearRepositorioUsuarios } = require('./repositories/usuariosRepositorio');
 const { crearServicioUsuarios } = require('./services/usuariosService');
-const { crearMailerConsola } = require('./mailer/consola');
+const { crearRepositorioAlertas } = require('./repositories/alertasRepositorio');
+const { crearServicioAlertas } = require('./services/alertasService');
 const { crearSesiones } = require('./utilidades/sesiones');
 const claves = require('./utilidades/claves');
 const { crearAutenticacion, mismoOrigen } = require('./middleware/autenticacion');
@@ -30,17 +31,17 @@ const cotizaciones = crearServicioCotizaciones({ cache, adaptadores, cacheMin: c
 const calculos = crearServicioCalculos({ cotizaciones });
 const historico = crearServicioHistorico({ repositorio });
 
-// Cuentas de usuario. El mailer es intercambiable: hoy imprime en consola; en la Etapa 6 se agrega el SMTP real.
+// Cuentas de usuario y alertas. El mailer es intercambiable: imprime en consola o envía por SMTP.
 let secretoSesion = config.auth.secreto;
 if (!secretoSesion) {
   secretoSesion = crypto.randomBytes(32).toString('hex');
   console.warn('AVISO: falta JWT_SECRET en .env; se usa uno temporal y las sesiones se cerrarán al reiniciar.');
 }
-if (config.correo.modo !== 'consola') throw new Error(`MAIL_MODO "${config.correo.modo}" no existe todavía (por ahora solo "consola")`);
-const mailer = crearMailerConsola();
+const mailer = crearMailer(config); // consola o SMTP real, según MAIL_MODO
 const usuarios = crearServicioUsuarios({ repositorio: crearRepositorioUsuarios(pool), mailer, claves, urlPublica: config.auth.urlPublica });
 const sesiones = crearSesiones({ secreto: secretoSesion, duracionDias: config.auth.duracionDias, segura: config.auth.cookieSegura });
-const cuentas = { usuarios, sesiones, autenticacion: crearAutenticacion({ sesiones, usuarios }), mismoOrigen };
+const alertas = crearServicioAlertas({ repositorio: crearRepositorioAlertas(pool), maximoPorUsuario: config.alertas.maxPorUsuario, enfriamientoHoras: config.alertas.enfriamientoHoras });
+const cuentas = { usuarios, sesiones, autenticacion: crearAutenticacion({ sesiones, usuarios }), mismoOrigen, alertas };
 
 const app = crearApp({ repositorio, cotizaciones, calculos, historico, cuentas, corsOrigenes: config.corsOrigenes });
 

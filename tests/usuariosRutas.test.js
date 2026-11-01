@@ -20,6 +20,16 @@ test('validación de registro: normaliza el correo y exige clave de 10 a 128 car
   assert.throws(() => v.validarRegistro({ correo: OK.correo, clave: 'x'.repeat(129) }), /entre 10 y 128/);
 });
 
+test('validación de correo: acepta formas normales y rechaza símbolos que confunden a los analizadores de direcciones', () => {
+  for (const bueno of ['ana@ejemplo.com', 'ana.perez+alertas@mail.ejemplo.com.bo', 'a_b-c%d@x1.co', 'ANA@Ejemplo.COM  ']) {
+    assert.ok(v.validarCorreo({ correo: bueno }).correo, bueno);
+  }
+  for (const malo of ['a;b@c.com', 'a<b>@c.com', '"a"@c.com', 'a(x)@c.com', 'a@c.com,d@e.com', 'a@ex ample.com', 'a@münchen.de', 'año@c.com',
+    '.a@c.com', 'a..b@c.com', 'a.@c.com', 'a@-c.com', 'a@c-.com', 'a@c.c', 'a@c..com', 'a@@c.com', `${'a'.repeat(65)}@c.com`, 'a@c.com\r\nBcc: x@y.com']) {
+    assert.throws(() => v.validarCorreo({ correo: malo }), /correo válido/, malo);
+  }
+});
+
 test('validación: el cuerpo debe ser un objeto con textos (nada de números, arreglos u objetos anidados)', () => {
   for (const cuerpo of [undefined, null, [], 'texto', 5]) assert.throws(() => v.validarRegistro(cuerpo), /objeto JSON/);
   assert.throws(() => v.validarRegistro({ correo: { $ne: '' }, clave: OK.clave }), /Falta el campo "correo"/);

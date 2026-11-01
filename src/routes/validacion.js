@@ -1,6 +1,7 @@
 // Validación de parámetros de entrada por LISTA BLANCA: solo se acepta lo que se espera, nada más.
 const { ErrorValidacion } = require('../errores');
 const { MONEDAS_SOPORTADAS, TASAS_BOB, LADOS } = require('../dominio/monedas');
+const { SERIES_ALERTA, LADOS: LADOS_ALERTA, TIPOS: TIPOS_ALERTA, LIMITES_UMBRAL } = require('../dominio/alertas');
 const { SELECCIONES, DIAS_PERMITIDOS, FORMATOS_CSV } = require('../dominio/historico');
 
 // Un parámetro repetido (?monto=1&monto=2) llega como arreglo: se rechaza.
@@ -58,9 +59,16 @@ function campoTexto(cuerpo, nombre) {
   if (typeof v !== 'string' || v === '') throw new ErrorValidacion(`Falta el campo "${nombre}"`);
   return v;
 }
+// Correo: solo caracteres comunes (letras, números y . _ % + - en la parte local; letras, números y guiones en el dominio).
+// Estricto A PROPÓSITO: símbolos como ; < > ( ) " , confunden a los analizadores de direcciones y permiten colar destinatarios extra.
+// Consecuencia: no se aceptan correos con letras fuera del alfabeto básico (ñ, acentos, dominios en ñandú.bo…).
+const LOCAL_CORREO = /^[a-z0-9_%+-]+(\.[a-z0-9_%+-]+)*$/;
+const DOMINIO_CORREO = /^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,24}$/;
 function correo(cuerpo) {
   const v = campoTexto(cuerpo, 'correo').trim().toLowerCase();
-  if (v.length > 254 || !/^[^\s@]{1,64}@[^\s@.]+(\.[^\s@.]+)*\.[^\s@.]{2,}$/.test(v)) throw new ErrorValidacion('Escribe un correo válido');
+  const partes = v.split('@');
+  const valido = v.length <= 254 && partes.length === 2 && partes[0].length <= 64 && LOCAL_CORREO.test(partes[0]) && DOMINIO_CORREO.test(partes[1]);
+  if (!valido) throw new ErrorValidacion('Escribe un correo válido');
   return v;
 }
 function claveNueva(cuerpo, nombre = 'clave') {
@@ -87,7 +95,36 @@ const validarRestablecer = (b) => ({ token: token(b), clave: claveNueva(b) });
 const validarCambioClave = (b) => ({ claveActual: claveExistente(b, 'claveActual'), claveNueva: claveNueva(b, 'claveNueva') });
 const validarEliminacion = (b) => ({ clave: claveExistente(b) });
 
+// ---- Alertas ----
+function validarAlerta(cuerpo) {
+  cuerpoObjeto(cuerpo);
+  const elegir = (nombre, permitidos, porDefecto) => {
+    const v = cuerpo[nombre] === undefined ? porDefecto : cuerpo[nombre];
+    if (!permitidos.includes(v)) throw new ErrorValidacion(`El campo "${nombre}" debe ser: ${permitidos.join(', ')}`);
+    return v;
+  };
+  const serie = elegir('serie', SERIES_ALERTA);
+  const tipo = elegir('tipo', TIPOS_ALERTA);
+  const lado = serie === 'oficial' ? 'venta' : elegir('lado', LADOS_ALERTA, 'venta'); // el oficial tiene un solo valor
+  const u = cuerpo.umbral;
+  if (typeof u !== 'number' || !Number.isFinite(u)) throw new ErrorValidacion('El campo "umbral" debe ser un número');
+  const { min, max } = tipo === 'cambio_pct' ? LIMITES_UMBRAL.porcentaje : LIMITES_UMBRAL.precio;
+  const umbral = Math.round(u * 100) / 100;
+  if (umbral < min || umbral > max) throw new ErrorValidacion(`El umbral debe estar entre ${min} y ${max}${tipo === 'cambio_pct' ? ' (%)' : ' (Bs)'}`);
+  return { serie, lado, tipo, umbral };
+}
+function validarActiva(cuerpo) {
+  if (typeof cuerpoObjeto(cuerpo).activa !== 'boolean') throw new ErrorValidacion('El campo "activa" debe ser true o false');
+  return { activa: cuerpo.activa };
+}
+function validarIdAlerta(params) {
+  const id = params && params.id;
+  if (typeof id !== 'string' || !/^\d{1,15}$/.test(id)) throw new ErrorValidacion('Identificador de alerta inválido');
+  return Number(id);
+}
+
 module.exports = {
+  validarAlerta, validarActiva, validarIdAlerta,
   validarConversion, validarHistorico, validarExportacion, validarRegistro, validarIngreso, validarCorreo, validarToken,
   validarRestablecer, validarCambioClave, validarEliminacion, CLAVE_MIN, CLAVE_MAX,
 };

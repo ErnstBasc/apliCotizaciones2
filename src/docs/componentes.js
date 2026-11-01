@@ -36,6 +36,20 @@ const esquemas = {
       creadoEn: { type: 'string', format: 'date-time' },
     },
   },
+  Alerta: {
+    type: 'object',
+    properties: {
+      id: { type: 'integer', example: 5 },
+      serie: { type: 'string', enum: ['oficial', 'paralelo'] },
+      lado: { type: 'string', enum: ['venta', 'compra'] },
+      tipo: { type: 'string', enum: ['sube_de', 'baja_de', 'cambio_pct'] },
+      umbral: { type: 'number', description: 'Bs por USD (sube_de, baja_de) o % (cambio_pct)', example: 12.5 },
+      activa: { type: 'boolean' },
+      descripcion: { type: 'string', example: 'El dólar paralelo (venta) sube de 12,50 Bs' },
+      ultimoAviso: { type: 'string', format: 'date-time', nullable: true },
+      creadaEn: { type: 'string', format: 'date-time' },
+    },
+  },
   Mensaje: {
     type: 'object',
     properties: { mensaje: { type: 'string', example: 'Operación realizada' } },
