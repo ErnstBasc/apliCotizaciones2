@@ -9,7 +9,7 @@ const AHORA = new Date('2026-11-01T16:00:00Z'); // 12:00 en La Paz
 const obs = (instrumento, entidad, venta, compra, estado = 'vigente') => ({ instrumento, entidad, venta, compra, valor: venta, estado });
 
 function montar({ alertas, precios, dias = [], fallaCorreo = false } = {}) {
-  const estado = { enviados: [], reclamos: [], liberados: [], marcas: new Map(alertas.map((a) => [a.id, a.ultimoAvisoEn])) };
+  const estado = { enviados: [], reclamos: [], liberados: [], registrados: [], marcas: new Map(alertas.map((a) => [a.id, a.ultimoAvisoEn])) };
   const repoAlertas = {
     activasConCorreo: async () => alertas,
     reclamarAviso: async ({ id, ahora, esperaHasta }) => {
@@ -18,6 +18,7 @@ function montar({ alertas, precios, dias = [], fallaCorreo = false } = {}) {
       estado.marcas.set(id, ahora); estado.reclamos.push(id); return true;
     },
     liberarAviso: async ({ id, anterior }) => { estado.marcas.set(id, anterior); estado.liberados.push(id); },
+    registrarAviso: async (aviso) => { estado.registrados.push(aviso); },
   };
   const consultasDias = [];
   const repoCotiz = {

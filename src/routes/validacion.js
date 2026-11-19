@@ -40,6 +40,15 @@ function validarHistorico(query) {
   return { serie, dias };
 }
 
+// Panel de administración: período en días (lista blanca)
+const DIAS_ESTADISTICAS = [7, 30, 90];
+function validarEstadisticas(query) {
+  const bruto = texto(query, 'dias', '30');
+  const dias = /^\d{1,3}$/.test(bruto) ? Number(bruto) : NaN;
+  if (!DIAS_ESTADISTICAS.includes(dias)) throw new ErrorValidacion(`El parámetro "dias" debe ser: ${DIAS_ESTADISTICAS.join(', ')}`);
+  return { dias };
+}
+
 function validarExportacion(query) {
   const formato = texto(query, 'formato', 'excel');
   if (!FORMATOS_CSV.includes(formato)) throw new ErrorValidacion(`El parámetro "formato" debe ser: ${FORMATOS_CSV.join(' o ')}`);
@@ -125,6 +134,6 @@ function validarIdAlerta(params) {
 
 module.exports = {
   validarAlerta, validarActiva, validarIdAlerta,
-  validarConversion, validarHistorico, validarExportacion, validarRegistro, validarIngreso, validarCorreo, validarToken,
+  validarConversion, validarHistorico, validarExportacion, validarEstadisticas, DIAS_ESTADISTICAS, validarRegistro, validarIngreso, validarCorreo, validarToken,
   validarRestablecer, validarCambioClave, validarEliminacion, CLAVE_MIN, CLAVE_MAX,
 };

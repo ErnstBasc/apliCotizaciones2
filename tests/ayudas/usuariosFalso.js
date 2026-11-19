@@ -17,6 +17,16 @@ function crearRepositorioFalso() {
     },
     async reiniciarIntentos(id) { const u = usuarios.get(id); u.intentosFallidos = 0; u.bloqueadoHasta = null; },
     async actualizarClave(id, claveHash) { const u = usuarios.get(id); Object.assign(u, { claveHash, versionSesion: u.versionSesion + 1, intentosFallidos: 0, bloqueadoHasta: null }); return { ...u }; },
+    async fijarAdmin({ correo, claveHash, ahora }) {
+      let u = [...usuarios.values()].find((x) => x.correo === correo);
+      if (!u) { u = { id: sig++, correo, claveHash, rol: 'admin', verificadoEn: ahora, intentosFallidos: 0, bloqueadoHasta: null, versionSesion: 0, creadoEn: ahora }; usuarios.set(u.id, u); }
+      else Object.assign(u, { claveHash, rol: 'admin', verificadoEn: u.verificadoEn ?? ahora, versionSesion: u.versionSesion + 1, intentosFallidos: 0, bloqueadoHasta: null });
+      return { ...u };
+    },
+    async quitarAdmin(correo) {
+      const u = [...usuarios.values()].find((x) => x.correo === correo && x.rol === 'admin');
+      if (!u) return null; u.rol = 'registrado'; u.versionSesion += 1; return { ...u };
+    },
     async eliminar(id) { usuarios.delete(id); for (let i = tokens.length - 1; i >= 0; i--) if (tokens[i].usuarioId === id) tokens.splice(i, 1); },
     async guardarToken({ usuarioId, tipo, tokenHash, expiraEn }) {
       for (let i = tokens.length - 1; i >= 0; i--) if (tokens[i].usuarioId === usuarioId && tokens[i].tipo === tipo && !tokens[i].usadoEn) tokens.splice(i, 1);

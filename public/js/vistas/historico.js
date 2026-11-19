@@ -43,7 +43,7 @@ export function iniciarHistorico() {
     resumen.textContent = texto;
     lienzo.setAttribute('aria-label', `Gráfico de la evolución diaria del dólar. ${texto}`);
     if (!window.Chart) {
-      resumen.textContent = `No se pudo cargar la librería del gráfico (¿sin conexión a internet?). ${texto}`;
+      resumen.textContent = `No se pudo cargar la librería del gráfico (falta public/vendor/chart.umd.js; ver README). ${texto}`;
       return;
     }
     const fechas = fechasEntre(datos.desde, datos.hasta);

@@ -122,6 +122,7 @@ function crearServicioUsuarios({
     async eliminarCuenta({ usuarioId, clave }) {
       const usuario = await repositorio.buscarPorId(usuarioId);
       if (!usuario) throw new ErrorApp(401, 'Inicia sesión para continuar');
+      if (usuario.rol === 'admin') throw new ErrorApp(403, 'La cuenta de administrador no se puede eliminar desde la página'); // evita quedarse sin admin por error o por una sesión robada
       if (!(await exigirClave(usuario, clave))) throw new ErrorApp(403, 'La contraseña no es correcta');
       await repositorio.eliminar(usuario.id);
       return { mensaje: 'Tu cuenta y tus datos fueron eliminados.' };

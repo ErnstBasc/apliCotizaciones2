@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
   id                 BIGSERIAL PRIMARY KEY,
   correo             TEXT NOT NULL,
   clave_hash         TEXT NOT NULL,                       -- hash scrypt con sal; la contraseña NUNCA se guarda
-  rol                TEXT NOT NULL DEFAULT 'registrado' CHECK (rol IN ('registrado', 'premium')),
+  rol                TEXT NOT NULL DEFAULT 'registrado' CHECK (rol IN ('registrado', 'premium', 'admin')),
   verificado_en      TIMESTAMPTZ,                         -- NULL = correo sin confirmar
   intentos_fallidos  INTEGER NOT NULL DEFAULT 0,
   bloqueado_hasta    TIMESTAMPTZ,                         -- bloqueo temporal tras demasiados intentos
@@ -131,3 +131,23 @@ CREATE TABLE IF NOT EXISTS alertas (
 );
 CREATE INDEX IF NOT EXISTS alertas_por_usuario ON alertas (usuario_id);
 CREATE INDEX IF NOT EXISTS alertas_activas ON alertas (activa) WHERE activa;
+
+-- ---------- Administrador y estadísticas (migración 005) ----------
+-- Contadores de uso: cuántas peticiones a la API (y cuántas descargas de CSV) hubo cada día, por ruta.
+--    Son CONTADORES, no un registro por visita: no guardan IP, ni correo, ni nada de la persona.
+CREATE TABLE IF NOT EXISTS uso_diario (
+  dia    DATE   NOT NULL,                                          -- día en hora de Bolivia
+  tipo   TEXT   NOT NULL CHECK (tipo IN ('peticion', 'descarga')),
+  ruta   TEXT   NOT NULL,                                          -- ejemplo: /cotizaciones, /alertas/:id
+  total  BIGINT NOT NULL DEFAULT 0 CHECK (total >= 0),
+  PRIMARY KEY (dia, tipo, ruta)
+);
+
+-- Avisos de alertas enviados (sin enlace al usuario: el conteo sobrevive aunque se borre la alerta o la cuenta)
+CREATE TABLE IF NOT EXISTS avisos_enviados (
+  id          BIGSERIAL PRIMARY KEY,
+  enviado_en  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  serie       TEXT NOT NULL,
+  tipo        TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS avisos_enviados_fecha ON avisos_enviados (enviado_en);

@@ -48,6 +48,10 @@ function crearRepositorioAlertas(db) {
           WHERE id = $1 AND activa AND (ultimo_aviso_en IS NULL OR ultimo_aviso_en <= $3) RETURNING id`, [id, ahora, esperaHasta]);
       return r.rowCount > 0;
     },
+    // Deja constancia de un aviso enviado (para las estadísticas). No guarda a quién se envió.
+    async registrarAviso({ serie, tipo }) {
+      await db.query('INSERT INTO avisos_enviados (serie, tipo) VALUES ($1, $2)', [serie, tipo]);
+    },
     // Si el envío falló, se devuelve la marca anterior para reintentar en la siguiente vuelta
     async liberarAviso({ id, ahora, anterior }) {
       await db.query('UPDATE alertas SET ultimo_aviso_en = $3 WHERE id = $1 AND ultimo_aviso_en = $2', [id, ahora, anterior]);

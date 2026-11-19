@@ -32,6 +32,12 @@
       <div id="tablero-datos"><p class="cargando">Cargando…</p></div>
     </section>
 
+    <!-- Solo lo ve el administrador (js/vistas/admin.js lo muestra al ingresar con esa cuenta; el servidor igual exige el rol) -->
+    <section class="bloque" id="admin-seccion" aria-labelledby="t-admin" hidden>
+      <h2 id="t-admin">Panel de administración</h2>
+      <div class="panel" id="admin-contenido"><p class="cargando">Cargando…</p></div>
+    </section>
+
     <div class="bloque rejilla-tarjetas">
       <section aria-labelledby="t-bancos">
         <h2 id="t-bancos">Bancos</h2>
@@ -143,8 +149,8 @@
     <p>Proyecto universitario de Tecnologías Web II. Es informativo y no constituye asesoría financiera.</p>
   </footer>
 
-  <!-- Chart.js 4.4.7 (versión fija) para el gráfico de evolución. Si no carga, la página funciona igual y el gráfico muestra un aviso. -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.js" defer></script>
+  <!-- Chart.js 4.4.7 alojado en este mismo servidor (npm run vendor lo copia aquí). Si falta, la página funciona igual y el gráfico muestra un aviso. -->
+  <script src="/vendor/chart.umd.js" defer></script>
   <script type="module" src="/js/principal.js"></script>
 </body>
 </html>

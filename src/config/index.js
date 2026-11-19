@@ -46,6 +46,15 @@ function correoDesdeEnv(env) {
   return { modo, remitente: env.MAIL_FROM || (smtp.usuario ? `apliCotizaciones <${smtp.usuario}>` : 'apliCotizaciones <no-responder@localhost>'), smtp };
 }
 
+// Seguridad de red. RATE_LIMIT=off solo se admite fuera de producción (útil al probar muchas veces seguidas).
+// TRUST_PROXY = cuántos servidores intermedios (nginx, la nube…) hay delante; sin esto, todos los visitantes parecerían tener la IP del proxy.
+function seguridadDesdeEnv(env, entorno) {
+  const limites = (env.RATE_LIMIT || 'on').toLowerCase();
+  if (!['on', 'off'].includes(limites)) throw new Error('RATE_LIMIT debe ser "on" u "off"');
+  if (limites === 'off' && entorno === 'production') throw new Error('RATE_LIMIT=off no está permitido en producción');
+  return { limiteActivo: limites === 'on', proxiesConfiables: enteroDesdeEnv(env, 'TRUST_PROXY', 0) };
+}
+
 // Recibe el entorno como parámetro para poder probarlo sin tocar process.env real.
 function cargarConfig(env = process.env) {
   const entorno = env.NODE_ENV || 'development';
@@ -89,6 +98,7 @@ function cargarConfig(env = process.env) {
       maxPorUsuario: enteroDesdeEnv(env, 'ALERTAS_MAX', 3),
       enfriamientoHoras: minutosDesdeEnv(env, 'ALERTAS_ENFRIAMIENTO_H', 12),
     },
+    seguridad: seguridadDesdeEnv(env, entorno),
     notificadorMin: minutosDesdeEnv(env, 'NOTIFICADOR_MIN', 5), // cada cuántos minutos revisa las alertas
   };
 }

@@ -12,6 +12,7 @@ import { iniciarHistorico } from './vistas/historico.js';
 import { iniciarCuenta } from './vistas/cuenta.js';
 import { iniciarDescarga } from './vistas/descarga.js';
 import { iniciarAlertas } from './vistas/alertas.js';
+import { iniciarAdmin } from './vistas/admin.js';
 
 const REFRESCO_MS = 5 * 60_000;
 const $ = (id) => document.getElementById(id);
@@ -58,6 +59,7 @@ async function actualizarTodo() {
 iniciarCuenta(); // la cuenta es independiente del resto: si falla, la página de precios sigue funcionando
 iniciarDescarga();
 iniciarAlertas();
+iniciarAdmin();
 const recargarHistorico = iniciarHistorico();
 const convertir = iniciarConversor();
 $('btn-actualizar').addEventListener('click', () => { actualizarTodo(); convertir(); });

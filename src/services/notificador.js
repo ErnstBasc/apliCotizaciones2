@@ -65,6 +65,7 @@ function crearRevisorAlertas({
           try {
             await mailer.enviar({ para: alerta.correo, ...correoAlerta({ descripcion: describir(alerta), actual, cierre, cambioPct, urlPublica, horas: enfriamientoHoras }) });
             resumen.enviados += 1;
+            try { await alertas.registrarAviso({ serie: alerta.serie, tipo: alerta.tipo }); } catch (e) { logger.error(`[notificador] no se pudo registrar el aviso en las estadísticas: ${e.message}`); } // el correo ya salió: esto no lo anula
             logger.log(`[notificador] aviso enviado: alerta ${alerta.id} (${describir(alerta)})`);
           } catch (err) {
             await alertas.liberarAviso({ id: alerta.id, ahora: momento, anterior: alerta.ultimoAvisoEn });

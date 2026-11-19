@@ -31,7 +31,7 @@ const esquemas = {
     properties: {
       id: { type: 'integer', example: 12 },
       correo: { type: 'string', example: 'ana@ejemplo.com' },
-      rol: { type: 'string', enum: ['registrado', 'premium'], description: 'Hoy todos son "registrado"; "premium" queda reservado para una función futura' },
+      rol: { type: 'string', enum: ['registrado', 'premium', 'admin'], description: '"registrado" es el usuario común; "premium" queda reservado para una función futura; "admin" ve el panel de estadísticas (solo se crea con el script npm run admin:crear)' },
       verificado: { type: 'boolean', description: 'true si ya confirmó su correo (requisito para CSV y alertas)' },
       creadoEn: { type: 'string', format: 'date-time' },
     },

@@ -7,6 +7,9 @@
     "start": "node src/server.js",
     "recolector": "node src/recolector.js",
     "notificador": "node src/notificador.js",
+    "vendor": "node scripts/copiarVendor.js",
+    "correo:prueba": "node scripts/probarCorreo.js",
+    "admin:crear": "node scripts/crearAdmin.js",
     "dev": "node --watch src/server.js",
     "test": "node --test",
     "datos:ficticios": "node scripts/sembrarDatosFicticios.js",
@@ -16,6 +19,9 @@
     "node": ">=18"
   },
   "license": "MIT",
+  "devDependencies": {
+    "chart.js": "4.4.7"
+  },
   "dependencies": {
     "dotenv": "^16.4.7",
     "express": "^4.21.2",

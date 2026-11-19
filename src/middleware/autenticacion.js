@@ -1,6 +1,8 @@
 // Dos guardias para las rutas:
 //   exigirSesion     → hay que haber ingresado (cookie válida y usuario vigente). Deja el usuario en req.usuario.
 //   exigirVerificado → además, el correo debe estar confirmado (lo usarán CSV y alertas).
+//   exigirAdmin      → además, el rol debe ser "admin". El rol se lee de la BASE en cada petición (no del token),
+//                      así que quitarle el rol a alguien surte efecto de inmediato.
 //   mismoOrigen      → defensa contra CSRF para peticiones que modifican datos.
 const { ErrorApp } = require('../errores');
 
@@ -23,7 +25,13 @@ function crearAutenticacion({ sesiones, usuarios }) {
     return next();
   }
 
-  return { exigirSesion, exigirVerificado };
+  function exigirAdmin(req, res, next) {
+    if (!req.usuario) return next(new ErrorApp(401, 'Inicia sesión para continuar'));
+    if (req.usuario.rol !== 'admin' || !req.usuario.verificado) return next(new ErrorApp(403, 'Esta sección es solo para administradores'));
+    return next();
+  }
+
+  return { exigirSesion, exigirVerificado, exigirAdmin };
 }
 
 // CSRF: un sitio malicioso puede hacer que TU navegador envíe una petición a esta API con tu cookie.

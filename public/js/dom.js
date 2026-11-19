@@ -4,6 +4,9 @@ export function el(etiqueta, props = {}, ...hijos) {
   for (const [clave, valor] of Object.entries(props)) {
     if (valor === null || valor === undefined || valor === false) continue;
     if (clave === 'class') nodo.className = valor;
+    // Estilos: solo como objeto {propiedad: valor}, aplicados con el DOM (CSSOM). Un atributo style="..." lo bloquearía la
+    // política de contenido (CSP) del servidor, que no permite estilos en línea.
+    else if (clave === 'style') for (const [propiedad, v] of Object.entries(valor)) nodo.style.setProperty(propiedad, String(v));
     else if (clave.startsWith('on')) nodo.addEventListener(clave.slice(2), valor);
     else nodo.setAttribute(clave, valor === true ? '' : valor);
   }

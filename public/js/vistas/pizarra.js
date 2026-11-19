@@ -7,9 +7,9 @@ function fila(titulo, detalle, precios, indice, { soloVenta = false } = {}) {
   return el('div', { class: 'fila-tablero' },
     el('div', { class: 'fila-nombre' }, el('h3', {}, titulo), el('p', {}, detalle)),
     el('div', { class: 'celda' }, soloVenta ? null : el('span', { class: 'etiqueta' }, 'Venta'),
-      el('span', { class: 'cifra cifra-venta', style: `--i:${indice * 2}` }, bs(precios.venta))),
+      el('span', { class: 'cifra cifra-venta', style: { '--i': indice * 2 } }, bs(precios.venta))),
     soloVenta ? null : el('div', { class: 'celda' }, el('span', { class: 'etiqueta' }, 'Compra'),
-      el('span', { class: 'cifra cifra-compra', style: `--i:${indice * 2 + 1}` }, bs(precios.compra))));
+      el('span', { class: 'cifra cifra-compra', style: { '--i': indice * 2 + 1 } }, bs(precios.compra))));
 }
 
 export function pintarPizarra(contenedor, datos, { primeraVez }) {

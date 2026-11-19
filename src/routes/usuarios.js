@@ -50,17 +50,20 @@ const manejadores = (usuarios, sesiones) => ({
   },
 });
 
-function crearRutasUsuarios(express, { usuarios, sesiones, autenticacion, mismoOrigen }) {
+// `limites` (opcional) = limitadores de peticiones: freno a la fuerza bruta y al correo masivo (por IP y por destinatario)
+function crearRutasUsuarios(express, { usuarios, sesiones, autenticacion, mismoOrigen, limites }) {
   const h = manejadores(usuarios, sesiones);
+  const L = limites || {};
+  const con = (...middlewares) => middlewares.filter(Boolean);
   const r = express.Router();
   r.use(mismoOrigen);
-  r.post('/registro', h.registro);
-  r.post('/reenviar-verificacion', h.reenviar);
-  r.post('/verificar', h.verificar);
-  r.post('/ingresar', h.ingresar);
+  r.post('/registro', ...con(L.correos, L.porCorreo, h.registro));
+  r.post('/reenviar-verificacion', ...con(L.correos, L.porCorreo, h.reenviar));
+  r.post('/verificar', ...con(L.enlaces, h.verificar));
+  r.post('/ingresar', ...con(L.ingreso, h.ingresar));
   r.post('/salir', h.salir);
-  r.post('/recuperar', h.recuperar);
-  r.post('/restablecer', h.restablecer);
+  r.post('/recuperar', ...con(L.correos, L.porCorreo, h.recuperar));
+  r.post('/restablecer', ...con(L.enlaces, h.restablecer));
   r.get('/yo', autenticacion.exigirSesion, h.yo);
   r.post('/cambiar-clave', autenticacion.exigirSesion, h.cambiarClave);
   r.delete('/yo', autenticacion.exigirSesion, h.eliminar);

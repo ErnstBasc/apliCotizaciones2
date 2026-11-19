@@ -39,6 +39,19 @@ function crearRepositorioUsuarios(db) {
       `UPDATE usuarios SET clave_hash = $2, version_sesion = version_sesion + 1, intentos_fallidos = 0, bloqueado_hasta = NULL
        WHERE id = $1 RETURNING ${COLUMNAS}`, [id, claveHash]),
 
+    // Administrador: crea la cuenta o, si el correo ya existe, la convierte en admin y le fija la clave nueva.
+    // Siempre queda con el correo confirmado y las sesiones anteriores se cierran. Solo la usa el script npm run admin:crear.
+    fijarAdmin: ({ correo, claveHash, ahora }) => uno(
+      `INSERT INTO usuarios (correo, clave_hash, rol, verificado_en) VALUES ($1, $2, 'admin', $3)
+       ON CONFLICT (correo) DO UPDATE SET
+         clave_hash = EXCLUDED.clave_hash, rol = 'admin', verificado_en = COALESCE(usuarios.verificado_en, EXCLUDED.verificado_en),
+         version_sesion = usuarios.version_sesion + 1, intentos_fallidos = 0, bloqueado_hasta = NULL
+       RETURNING ${COLUMNAS}`, [correo, claveHash, ahora]),
+    // Quita el rol de administrador (vuelve a "registrado") y cierra sus sesiones. null si no era admin.
+    quitarAdmin: (correo) => uno(
+      `UPDATE usuarios SET rol = 'registrado', version_sesion = version_sesion + 1
+       WHERE correo = $1 AND rol = 'admin' RETURNING ${COLUMNAS}`, [correo]),
+
     eliminar: (id) => db.query('DELETE FROM usuarios WHERE id = $1', [id]), // los tokens caen en cascada
 
     // Un token nuevo reemplaza a los anteriores no usados del mismo tipo (solo sirve el último enlace enviado).

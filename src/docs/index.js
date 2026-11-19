@@ -22,6 +22,7 @@ const especificacion = {
     { name: 'Histórico', description: 'Evolución diaria del dólar oficial y paralelo' },
     { name: 'Usuarios', description: 'Cuentas: registro, sesión (cookie httpOnly), verificación de correo, recuperación y baja' },
     { name: 'Alertas', description: 'Avisos por correo cuando el dólar oficial o paralelo cumple una condición (requiere sesión y correo confirmado)' },
+    { name: 'Administración', description: 'Estadísticas de uso para el administrador (requiere sesión con rol admin)' },
     { name: 'Cálculos', description: 'Resumen, conversión y comparación calculados a partir de las fuentes' },
   ],
   paths: {
@@ -32,6 +33,7 @@ const especificacion = {
     ...require('./rutas/historico'),
     ...require('./rutas/usuarios'),
     ...require('./rutas/alertas'),
+    ...require('./rutas/admin'),
   },
   components: {
     schemas: esquemas,
