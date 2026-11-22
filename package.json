@@ -13,7 +13,8 @@
     "dev": "node --watch src/server.js",
     "test": "node --test",
     "datos:ficticios": "node scripts/sembrarDatosFicticios.js",
-    "datos:borrar-ficticios": "node scripts/sembrarDatosFicticios.js --borrar"
+    "datos:borrar-ficticios": "node scripts/sembrarDatosFicticios.js --borrar",
+    "datos:importar": "node scripts/importarHistorico.js"
   },
   "engines": {
     "node": ">=18"

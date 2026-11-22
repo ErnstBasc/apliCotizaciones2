@@ -50,7 +50,8 @@ INSERT INTO fuentes (codigo, nombre, url) VALUES
   ('bcb',              'Banco Central de Bolivia',  'https://www.bcb.gob.bo'),
   ('frankfurter',      'Frankfurter',               'https://api.frankfurter.dev'),
   ('binance',          'Binance P2P (no oficial)',  'https://p2p.binance.com'),
-  ('dolarbluebolivia', 'dolarbluebolivia.click',    'https://api.dolarbluebolivia.click')
+  ('dolarbluebolivia', 'dolarbluebolivia.click',    'https://api.dolarbluebolivia.click'),
+  ('dolarblue_historico', 'dolarbluebolivia.click (histórico importado)', 'https://dolarbluebolivia.click')
 ON CONFLICT (codigo) DO NOTHING;
 
 INSERT INTO entidades (codigo, nombre, tipo, web) VALUES

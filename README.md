@@ -36,6 +36,18 @@ npm run notificador  # proceso aparte: revisa las alertas y envía los avisos po
 
 `npm run recolector` arranca un proceso independiente del servidor web que consulta cada fuente a intervalos y guarda cada lectura en PostgreSQL, para que el histórico se acumule aunque nadie abra la página. Los intervalos se cambian en `.env` (`RECOLECTOR_*_MIN`, en minutos; `0` desactiva esa tarea). Si una fuente falla, se registra y se reintenta en el siguiente intervalo; nunca hay dos lecturas simultáneas de la misma fuente. Con `Ctrl+C` termina la lectura en curso y se cierra ordenadamente.
 
+## Histórico real (importación)
+
+Para que el gráfico no empiece vacío, se pueden traer series históricas públicas de dolarbluebolivia.click (oficial diario y paralelo de los últimos 6 meses):
+
+1. `npm run datos:borrar-ficticios` (los datos ficticios ocuparían los días; el importador se niega a seguir si existen).
+2. `npm run datos:importar -- --explorar` muestra qué trae la API, sin tocar la base.
+3. `npm run datos:importar -- --simular` dice cuántas filas guardaría, sin guardar.
+4. `npm run datos:importar` guarda: **un valor por día** (el último del día, hora de Bolivia), **solo en los días vacíos** (nunca pisa lo que guardó el recolector) y sin el día de hoy. Se puede repetir sin duplicar.
+5. `npm run datos:importar -- --borrar` quita todo lo importado.
+
+Lo importado se guarda con la fuente `dolarblue_historico`, separada de lo que recolecta el sistema en vivo. Es un tercero sin garantía: en el informe y la presentación hay que citar la fuente.
+
 ## Cuentas de usuario
 
 - **Migración:** ejecutar `db/migraciones/003_usuarios.sql` en la base existente (pgAdmin → Query Tool). Crea `usuarios` y `tokens_usuario`.
