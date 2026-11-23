@@ -9,26 +9,26 @@
   <meta name="description" content="Dólar oficial, paralelo, bancos y billeteras en Bolivia, más monedas vecinas, oro, UFV e inflación.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="/css/estilos.css">
 </head>
 <body>
-  <div class="bandera" aria-hidden="true"></div>
-
-  <header class="cabecera contenedor">
-    <span class="marca">apliCotizaciones2</span>
+  <header class="barra-superior">
+  <div class="cabecera contenedor">
+    <span class="marca"><span class="marca-signo" aria-hidden="true">$</span>apliCotizaciones</span>
     <div class="acciones">
       <span id="actualizado" class="actualizado" role="status">Cargando datos…</span>
       <button type="button" id="btn-actualizar" class="boton boton-suave">Actualizar</button>
       <a href="/docs" class="enlace">Documentación de la API</a>
       <button type="button" id="btn-cuenta" class="boton boton-suave boton-cuenta" aria-haspopup="dialog">Ingresar</button>
     </div>
+  </div>
   </header>
 
   <main class="contenedor">
     <section class="tablero" aria-labelledby="t-tablero">
-      <h1 id="t-tablero">El dólar hoy en Bolivia</h1>
-      <p class="tablero-ayuda">Bolivianos por dólar</p>
+      <h1 id="t-tablero">Dólar en Bolivia, hoy</h1>
+      <p class="tablero-ayuda">Bolivianos por 1 USD. <strong>Venta</strong>: lo que pagas. <strong>Compra</strong>: lo que recibes.</p>
       <div id="tablero-datos"><p class="cargando">Cargando…</p></div>
     </section>
 
