@@ -13,6 +13,7 @@ import { iniciarCuenta } from './vistas/cuenta.js';
 import { iniciarDescarga } from './vistas/descarga.js';
 import { iniciarAlertas } from './vistas/alertas.js';
 import { iniciarAdmin } from './vistas/admin.js';
+import { iniciarArticulos } from './vistas/articulos.js';
 
 const REFRESCO_MS = 5 * 60_000;
 const $ = (id) => document.getElementById(id);
@@ -60,6 +61,7 @@ iniciarCuenta(); // la cuenta es independiente del resto: si falla, la página d
 iniciarDescarga();
 iniciarAlertas();
 iniciarAdmin();
+iniciarArticulos();
 const recargarHistorico = iniciarHistorico();
 const convertir = iniciarConversor();
 $('btn-actualizar').addEventListener('click', () => { actualizarTodo(); convertir(); });

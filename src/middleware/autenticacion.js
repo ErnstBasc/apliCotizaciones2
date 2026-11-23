@@ -3,6 +3,7 @@
 //   exigirVerificado → además, el correo debe estar confirmado (lo usarán CSV y alertas).
 //   exigirAdmin      → además, el rol debe ser "admin". El rol se lee de la BASE en cada petición (no del token),
 //                      así que quitarle el rol a alguien surte efecto de inmediato.
+//   exigirRol(roles, mensaje) → la cuenta debe tener uno de esos roles (por ejemplo premium o admin). También se lee de la base.
 //   mismoOrigen      → defensa contra CSRF para peticiones que modifican datos.
 const { ErrorApp } = require('../errores');
 
@@ -31,7 +32,16 @@ function crearAutenticacion({ sesiones, usuarios }) {
     return next();
   }
 
-  return { exigirSesion, exigirVerificado, exigirAdmin };
+  // Fábrica de guardias por rol (control de acceso basado en roles). Ejemplo: exigirRol(['premium', 'admin'])
+  function exigirRol(roles, mensaje = 'Tu cuenta no tiene acceso a esta función') {
+    return function exigirRolPermitido(req, res, next) {
+      if (!req.usuario) return next(new ErrorApp(401, 'Inicia sesión para continuar'));
+      if (!roles.includes(req.usuario.rol)) return next(new ErrorApp(403, mensaje));
+      return next();
+    };
+  }
+
+  return { exigirSesion, exigirVerificado, exigirAdmin, exigirRol };
 }
 
 // CSRF: un sitio malicioso puede hacer que TU navegador envíe una petición a esta API con tu cookie.

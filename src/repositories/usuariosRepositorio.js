@@ -47,6 +47,9 @@ function crearRepositorioUsuarios(db) {
          clave_hash = EXCLUDED.clave_hash, rol = 'admin', verificado_en = COALESCE(usuarios.verificado_en, EXCLUDED.verificado_en),
          version_sesion = usuarios.version_sesion + 1, intentos_fallidos = 0, bloqueado_hasta = NULL
        RETURNING ${COLUMNAS}`, [correo, claveHash, ahora]),
+    // Cambia entre "registrado" y "premium". Nunca toca a un administrador (eso es solo con npm run admin:crear).
+    cambiarRol: ({ correo, rol }) => uno(
+      `UPDATE usuarios SET rol = $2 WHERE correo = $1 AND rol <> 'admin' RETURNING ${COLUMNAS}`, [correo, rol]),
     // Quita el rol de administrador (vuelve a "registrado") y cierra sus sesiones. null si no era admin.
     quitarAdmin: (correo) => uno(
       `UPDATE usuarios SET rol = 'registrado', version_sesion = version_sesion + 1

@@ -132,7 +132,14 @@ function validarIdAlerta(params) {
   return Number(id);
 }
 
+function validarIdArticulo(params) {
+  const id = params && params.id;
+  if (typeof id !== 'string' || !/^\d{1,9}$/.test(id)) throw new ErrorValidacion('Identificador de artículo inválido');
+  return Number(id);
+}
+
 module.exports = {
+  validarIdArticulo,
   validarAlerta, validarActiva, validarIdAlerta,
   validarConversion, validarHistorico, validarExportacion, validarEstadisticas, DIAS_ESTADISTICAS, validarRegistro, validarIngreso, validarCorreo, validarToken,
   validarRestablecer, validarCambioClave, validarEliminacion, CLAVE_MIN, CLAVE_MAX,

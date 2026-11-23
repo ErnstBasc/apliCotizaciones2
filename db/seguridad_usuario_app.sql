@@ -31,6 +31,9 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON alertas TO aplicotizaciones_app;
 GRANT SELECT, INSERT, UPDATE ON uso_diario TO aplicotizaciones_app;
 GRANT SELECT, INSERT ON avisos_enviados TO aplicotizaciones_app;
 
+-- Artículos premium: la aplicación solo los lee (se cargan y editan desde pgAdmin)
+GRANT SELECT ON articulos TO aplicotizaciones_app;
+
 -- 7) Los contadores automáticos (id) de las tablas donde se inserta
 GRANT USAGE, SELECT ON SEQUENCE cotizaciones_id_seq, usuarios_id_seq, tokens_usuario_id_seq, alertas_id_seq, avisos_enviados_id_seq TO aplicotizaciones_app;
 

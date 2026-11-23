@@ -23,6 +23,10 @@ function crearRepositorioFalso() {
       else Object.assign(u, { claveHash, rol: 'admin', verificadoEn: u.verificadoEn ?? ahora, versionSesion: u.versionSesion + 1, intentosFallidos: 0, bloqueadoHasta: null });
       return { ...u };
     },
+    async cambiarRol({ correo, rol }) {
+      const u = [...usuarios.values()].find((x) => x.correo === correo && x.rol !== 'admin');
+      if (!u) return null; u.rol = rol; return { ...u };
+    },
     async quitarAdmin(correo) {
       const u = [...usuarios.values()].find((x) => x.correo === correo && x.rol === 'admin');
       if (!u) return null; u.rol = 'registrado'; u.versionSesion += 1; return { ...u };

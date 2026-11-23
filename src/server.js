@@ -23,6 +23,8 @@ const { crearRepositorioEstadisticas } = require('./repositories/estadisticasRep
 const { crearServicioEstadisticas } = require('./services/estadisticasService');
 const { crearMedidor } = require('./middleware/medicion');
 const especificacion = require('./docs');
+const { crearRepositorioArticulos } = require('./repositories/articulosRepositorio');
+const { crearServicioArticulos } = require('./services/articulosService');
 
 const config = cargarConfig();
 const pool = crearPool(config.db);
@@ -50,7 +52,8 @@ const alertas = crearServicioAlertas({ repositorio: crearRepositorioAlertas(pool
 const repositorioEstadisticas = crearRepositorioEstadisticas(pool);
 const estadisticas = crearServicioEstadisticas({ repositorio: repositorioEstadisticas });
 const medidor = crearMedidor({ repositorio: repositorioEstadisticas, rutasConocidas: Object.keys(especificacion.paths) });
-const cuentas = { usuarios, sesiones, autenticacion: crearAutenticacion({ sesiones, usuarios }), mismoOrigen, alertas, estadisticas };
+const cuentas = { usuarios, sesiones, autenticacion: crearAutenticacion({ sesiones, usuarios }), mismoOrigen, alertas, estadisticas,
+  articulos: crearServicioArticulos({ repositorio: crearRepositorioArticulos(pool) }) };
 
 const limites = crearLimitadores({ activo: config.seguridad.limiteActivo });
 const seguridad = { proxiesConfiables: config.seguridad.proxiesConfiables, https: config.auth.cookieSegura };

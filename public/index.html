@@ -89,6 +89,12 @@
       <div class="panel" id="alertas-contenido"><p class="cargando">Cargando…</p></div>
     </section>
 
+    <section class="bloque" aria-labelledby="t-articulos">
+      <h2 id="t-articulos">Análisis y perspectivas</h2>
+      <p class="nota">Resúmenes abiertos para todos. El texto completo es para usuarios premium.</p>
+      <div id="articulos-contenido"><p class="cargando">Cargando…</p></div>
+    </section>
+
     <div class="bloque rejilla-herramientas">
       <section aria-labelledby="t-conversor">
         <h2 id="t-conversor">Convertir</h2>
@@ -135,6 +141,14 @@
       <div id="monedas-datos"><p class="cargando">Cargando…</p></div>
     </section>
   </main>
+
+  <dialog id="dialogo-articulo" class="dialogo dialogo-articulo" aria-labelledby="articulo-titulo">
+    <div class="dialogo-cabecera">
+      <h2 id="articulo-titulo" tabindex="-1">Artículo</h2>
+      <button type="button" id="articulo-cerrar" class="boton-cerrar" aria-label="Cerrar">×</button>
+    </div>
+    <div id="articulo-contenido"></div>
+  </dialog>
 
   <dialog id="dialogo-cuenta" class="dialogo" aria-labelledby="dialogo-titulo">
     <div class="dialogo-cabecera">

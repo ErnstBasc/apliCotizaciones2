@@ -10,6 +10,7 @@
     "vendor": "node scripts/copiarVendor.js",
     "correo:prueba": "node scripts/probarCorreo.js",
     "admin:crear": "node scripts/crearAdmin.js",
+    "usuario:rol": "node scripts/asignarRol.js",
     "dev": "node --watch src/server.js",
     "test": "node --test",
     "datos:ficticios": "node scripts/sembrarDatosFicticios.js",

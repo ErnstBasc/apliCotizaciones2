@@ -77,6 +77,14 @@ Lo importado se guarda con la fuente `dolarblue_historico`, separada de lo que r
 - **Cómo se mide el uso:** un medidor cuenta en memoria cada petición a la API (no los archivos de la página, ni `/admin`, ni `/health`) y vuelca los totales a `uso_diario` cada 30 segundos y al cerrar el servidor. Son contadores por día y ruta: no guardan IP ni datos de personas. Solo existen contadores desde que se activó la etapa; los días anteriores aparecen en cero. Las rutas desconocidas se agrupan en "(otras)" para que los contadores no crezcan sin límite.
 - **Salvaguardas:** la cuenta de administrador no se puede eliminar desde la página; el ingreso es el de siempre (mismo mensaje de error, bloqueo tras 5 intentos, límite por IP).
 
+## Artículos premium (Etapa 11)
+
+- **Migración:** `db/migraciones/006_articulos.sql` crea la tabla `articulos` con **tres textos de prueba** (palabras de relleno). Para cambiarlos: pgAdmin → `articulos` → editar, o `UPDATE articulos SET titulo = '…', resumen = '…', cuerpo = '…' WHERE id = 1;`. El cuerpo es texto plano; una línea en blanco separa párrafos.
+- **Quién lee qué:** `GET /articulos` es público (título, autor, fecha y resumen; nunca el cuerpo). `GET /articulos/:id` exige sesión y rol **premium** (o admin); un usuario común recibe 403 "Contenido para suscriptores premium".
+- **Dar o quitar premium (sin pagos, solo por terminal):** `npm run usuario:rol -- correo@ejemplo.com premium` y `npm run usuario:rol -- correo@ejemplo.com registrado`. La cuenta debe existir; no se aplica a administradores. Rige al instante (el rol se lee de la base en cada petición).
+- **En la página:** sección "Análisis y perspectivas" con tarjetas. Sin sesión o sin premium se ve el resumen con un candado; con premium, "Leer artículo" abre el texto completo. El texto se inserta como texto, nunca como HTML.
+- **Guardia reutilizable:** `exigirRol(['premium', 'admin'])` en `src/middleware/autenticacion.js` (control de acceso basado en roles).
+
 ## Descarga CSV
 
 `GET /historico.csv?serie=oficial|paralelo|ambos&dias=7|30|90|180&formato=excel|estandar` entrega los mismos datos del gráfico, una fila por día (`fecha`, `oficial_bs_por_usd`, `paralelo_venta_bs_por_usd`, `paralelo_compra_bs_por_usd`). Exige sesión iniciada y correo confirmado (401 / 403 si no). El formato `excel` (por defecto) usa `;`, decimales con coma y BOM UTF-8 para abrirlo con doble clic en Excel en español; `estandar` usa `,` y punto decimal. Si no hay cuentas configuradas, la ruta no se monta. En la página, el botón "Descargar CSV" está bajo el gráfico y respeta la serie y el período elegidos.

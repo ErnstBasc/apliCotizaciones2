@@ -5,6 +5,7 @@ const { validarCorreo } = require('../routes/validacion');
 
 const CLAVE_ADMIN_MIN = 12; // más exigente que la de un usuario común (10)
 const CLAVE_ADMIN_MAX = 128;
+const ROLES_ASIGNABLES = ['registrado', 'premium'];
 
 function crearServicioAdministradores({ repositorio, claves, ahora = () => new Date() }) {
   return {
@@ -17,6 +18,13 @@ function crearServicioAdministradores({ repositorio, claves, ahora = () => new D
       const usuario = await repositorio.fijarAdmin({ correo: normalizado, claveHash: await claves.hashear(clave), ahora: ahora() });
       return { id: usuario.id, correo: usuario.correo, rol: usuario.rol };
     },
+    // Asigna "premium" o "registrado" a una cuenta existente (no a administradores). null si no existe o es admin.
+    async asignarRol({ correo, rol }) {
+      const { correo: normalizado } = validarCorreo({ correo });
+      if (!ROLES_ASIGNABLES.includes(rol)) throw new ErrorValidacion(`El rol debe ser: ${ROLES_ASIGNABLES.join(' o ')}`);
+      const usuario = await repositorio.cambiarRol({ correo: normalizado, rol });
+      return usuario ? { correo: usuario.correo, rol: usuario.rol } : null;
+    },
     // Devuelve la cuenta a "registrado". false si ese correo no era administrador.
     async quitar({ correo }) {
       const { correo: normalizado } = validarCorreo({ correo });
@@ -25,4 +33,4 @@ function crearServicioAdministradores({ repositorio, claves, ahora = () => new D
   };
 }
 
-module.exports = { crearServicioAdministradores, CLAVE_ADMIN_MIN };
+module.exports = { crearServicioAdministradores, CLAVE_ADMIN_MIN, ROLES_ASIGNABLES };

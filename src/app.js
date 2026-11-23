@@ -15,10 +15,11 @@ const { crearRutasHistorico } = require('./routes/historico');
 const { crearRutasUsuarios } = require('./routes/usuarios');
 const { crearRutasAlertas } = require('./routes/alertas');
 const { crearRutasAdmin } = require('./routes/admin');
+const { crearRutasArticulos } = require('./routes/articulos');
 const { noEncontrado, manejarErrores } = require('./middleware/errores');
 
 // `cuentas` agrupa lo de usuarios: { usuarios, sesiones, autenticacion, mismoOrigen, alertas } (opcional: sin él no hay rutas /usuarios)
-// `cuentas.estadisticas` (opcional) activa el panel del administrador (/admin). `medidor` (opcional) cuenta el uso de la API.
+// `cuentas.estadisticas` (opcional) activa el panel del administrador (/admin); `cuentas.articulos`, los artículos premium. `medidor` (opcional) cuenta el uso de la API.
 // `limites` = limitadores de peticiones (o null para desactivarlos). `seguridad` = { proxiesConfiables, https }.
 function crearApp({ repositorio, cotizaciones, calculos, historico, cuentas, limites = null, medidor = null, seguridad = {}, corsOrigenes = [], logger = console }) {
   const app = express();
@@ -49,6 +50,7 @@ function crearApp({ repositorio, cotizaciones, calculos, historico, cuentas, lim
   if (cuentas) app.use('/usuarios', crearRutasUsuarios(express, { ...cuentas, limites }));
   if (cuentas && cuentas.alertas) app.use('/alertas', crearRutasAlertas(express, cuentas));
   if (cuentas && cuentas.estadisticas) app.use('/admin', crearRutasAdmin(express, cuentas));
+  if (cuentas && cuentas.articulos) app.use('/articulos', crearRutasArticulos(express, cuentas));
   // Los pasos siguientes agregan aquí más rutas (indicadores, bancos, conversor, docs…).
 
   app.use(noEncontrado);
